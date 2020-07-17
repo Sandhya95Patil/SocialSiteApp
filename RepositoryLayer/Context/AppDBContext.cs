@@ -13,5 +13,7 @@ namespace RepositoryLayer.Context
         }
 
         public DbSet<RegistrationModel> Registrations { get; set; }
+        public DbSet<PostModel> Posts { get; set; }
+
     }
 }
