@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,6 @@ namespace CommonLayer.Show
 {
     public class PostShowModel
     {
-        public string Post { get; set; }
+        public IFormFile Post { get; set; }
     }
 }

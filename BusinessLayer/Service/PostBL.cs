@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
 using CommonLayer.Show;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
@@ -16,13 +17,13 @@ namespace BusinessLayer.Service
         {
             this.postRL = postRL;
         }
-        public async Task<PostModel> AddPost(int userId, PostShowModel postShowModel)
+        public async Task<PostModel> AddPost(IFormFile file, int userId)
         {
             try
             {
-                if (postShowModel != null)
+                if (file != null)
                 {
-                    var response = await this.postRL.AddPost(userId, postShowModel);
+                    var response = await this.postRL.AddPost(file, userId);
                     return response;
                 }
                 else

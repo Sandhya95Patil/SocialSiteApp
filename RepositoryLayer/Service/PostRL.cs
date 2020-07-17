@@ -1,7 +1,10 @@
 ﻿using CommonLayer.Model;
 using CommonLayer.Show;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using RepositoryLayer.Context;
 using RepositoryLayer.Interface;
+using RepositoryLayer.PostImage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +16,27 @@ namespace RepositoryLayer.Service
     public class PostRL : IPostRL
     {
         private readonly AppDBContext appDBContext;
-        public PostRL(AppDBContext appDBContext)
+        IConfiguration configuration;
+
+        public PostRL(AppDBContext appDBContext, IConfiguration configuration)
         {
             this.appDBContext = appDBContext;
+            this.configuration = configuration;
         }
-        public async Task<PostModel> AddPost(int userId,PostShowModel postShowModel)
+        public async Task<PostModel> AddPost(IFormFile file, int userId)
         {
             try
             {
                 var checkEmailId = this.appDBContext.Registrations.FirstOrDefault(g => g.Id==userId);
                 if (checkEmailId != null)
                 {
+                    ImageUpload imageUpload = new ImageUpload(this.configuration, file);
+                    var imageUrl = imageUpload.Upload(file);
+
                     var postDetails = new PostModel()
                     {
-                        UserId=userId,
-                       Post=postShowModel.Post,
+                       UserId=userId,
+                       Post= imageUrl,
                        CreatedDate=DateTime.Now
 
                     };
