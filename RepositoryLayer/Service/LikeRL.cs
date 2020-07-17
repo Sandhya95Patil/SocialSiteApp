@@ -23,35 +23,42 @@ namespace RepositoryLayer.Service
         }
         public async Task<LikesModel> Like(LikeShowModel likeShowModel, int likeById)
         {
-            var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == likeShowModel.PostId);
-            var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == likeById);
-            var likes = this.appDBContext.Likes.FirstOrDefault(g => g.PostId == likeShowModel.PostId && g.LikeById == likeById);
-            if (postExist != null && users != null && likes == null)
+            try
             {
-                var data = new LikesModel()
+                var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == likeShowModel.PostId);
+                var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == likeById);
+                var likes = this.appDBContext.Likes.FirstOrDefault(g => g.PostId == likeShowModel.PostId && g.LikeById == likeById);
+                if (postExist != null && users != null && likes == null)
                 {
-                    UserId = postExist.UserId,
-                    PostId = postExist.Id,
-                    LikeById = likeById,
-                    CreatedDate = DateTime.Now
-                };
-                this.appDBContext.Likes.Add(data);
-                var result = await this.appDBContext.SaveChangesAsync();
-                if (result > 0)
-                {
-                    var response = new LikesModel()
+                    var data = new LikesModel()
                     {
-                        Id = data.Id,
-                        PostId = data.PostId,
-                        UserId = data.UserId,
-                        LikeById = data.LikeById,
-                        CreatedDate = data.CreatedDate
+                        UserId = postExist.UserId,
+                        PostId = postExist.Id,
+                        LikeById = likeById,
+                        CreatedDate = DateTime.Now
                     };
-                    return response;
+                    this.appDBContext.Likes.Add(data);
+                    var result = await this.appDBContext.SaveChangesAsync();
+                    if (result > 0)
+                    {
+                        var response = new LikesModel()
+                        {
+                            Id = data.Id,
+                            PostId = data.PostId,
+                            UserId = data.UserId,
+                            LikeById = data.LikeById,
+                            CreatedDate = data.CreatedDate
+                        };
+                        return response;
+                    }
+                    return null;
                 }
                 return null;
             }
-            return null;
+            catch(Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }     
         }
 
         public IList<LikesModel> LikesForPost(int userId, int postId)

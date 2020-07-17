@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLayer.Interface
+namespace RepositoryLayer.Interface
 {
-    public interface ICommentBL
+    public interface ICommentRL
     {
         Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById);
-        (List<CommentsModel>,List<RegistrationModel>) GetAllComments(int userId, int postId);
+        (List<CommentsModel>, List<RegistrationModel>) GetAllComments(int userId, int postId);
+
     }
 }
