@@ -68,5 +68,48 @@ namespace RepositoryLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
+        public async Task<string> DeletePost(int userId, int postId)
+        {
+            try
+            {
+                var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.UserId == userId && g.Id == postId);
+                if (postExist != null)
+                {
+                    this.appDBContext.Posts.Remove(postExist);
+                }
+                var result = await this.appDBContext.SaveChangesAsync();
+                if (result > 0)
+                {
+                    return "Post Delete Successfully";
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public IList<PostModel> GetAllPosts(int userId)
+        {
+            IList<PostModel> postList = new List<PostModel>();
+            var posts = from table in this.appDBContext.Posts where table.UserId == userId select table;
+                foreach (var post in posts)
+                {
+                    postList.Add(post);
+                }
+                if (postList != null)
+                {
+                    return postList;
+                }
+               else
+               {
+                     return null;
+               }
+        }
     }
 }

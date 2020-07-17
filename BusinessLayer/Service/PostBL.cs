@@ -3,6 +3,7 @@ using CommonLayer.Model;
 using CommonLayer.Show;
 using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Interface;
+using RepositoryLayer.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,5 +37,44 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
          }
+
+        public async Task<string> DeletePost(int userId, int postId)
+        {
+            try
+            {
+                if (userId > 0 && postId > 0)
+                {
+                    var response = await this.postRL.DeletePost(userId, postId);
+                    return response;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<PostModel> GetAllPosts(int userId)
+        {
+            try
+            {
+                if (userId > 0)
+                {
+                    return this.postRL.GetAllPosts(userId);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

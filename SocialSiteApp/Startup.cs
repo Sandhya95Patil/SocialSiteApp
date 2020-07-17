@@ -92,6 +92,9 @@ namespace SocialSiteApp
             services.AddTransient<IPostBL, PostBL>();
             services.AddTransient<IPostRL, PostRL>();
 
+            services.AddTransient<ILikeBL, LikeBL>();
+            services.AddTransient<ILikeRL, LikeRL>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

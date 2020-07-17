@@ -15,5 +15,8 @@ namespace RepositoryLayer.Context
         public DbSet<RegistrationModel> Registrations { get; set; }
         public DbSet<PostModel> Posts { get; set; }
 
+        public DbSet<LikesModel> Likes { get; set; }
+
+        public DbSet<CommentsModel> Comments { get; set; }
     }
 }

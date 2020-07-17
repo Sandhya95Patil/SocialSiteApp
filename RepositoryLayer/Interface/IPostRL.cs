@@ -12,6 +12,7 @@ namespace RepositoryLayer.Interface
     {
         Task<PostModel> AddPost(IFormFile file, int userId);
 
-        Task<bool> DeletePost(int userId, int postId);
+        Task<string> DeletePost(int userId, int postId);
+        IList<PostModel> GetAllPosts(int userId);
     }
 }
