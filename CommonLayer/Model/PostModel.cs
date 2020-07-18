@@ -12,7 +12,14 @@ namespace CommonLayer.Model
         public int Id { get; set; }
         [ForeignKey("Registrations")]
         public int UserId { get; set; }
-        public string Post { get; set; }
+        public string Text { get; set; }
+
+        public string ImageUrl { get; set; }
+        public string SiteUrl { get; set; }
+
+        public bool IsRemoved { get; set; }
         public DateTime CreatedDate { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 }

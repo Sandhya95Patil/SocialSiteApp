@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RepositoryLayer.Context;
 
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200718092340_nameChange")]
+    partial class nameChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,15 +69,7 @@ namespace RepositoryLayer.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<string>("ImageUrl");
-
-                    b.Property<bool>("IsRemoved");
-
-                    b.Property<DateTime>("ModifiedDate");
-
-                    b.Property<string>("SiteUrl");
-
-                    b.Property<string>("Text");
+                    b.Property<string>("Post");
 
                     b.Property<int>("UserId");
 
@@ -117,11 +111,11 @@ namespace RepositoryLayer.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<bool>("IsRemoved");
-
-                    b.Property<DateTime>("ModifiedDate");
+                    b.Property<string>("Post");
 
                     b.Property<int>("PostId");
+
+                    b.Property<int>("ShareById");
 
                     b.Property<int>("SharedUserId");
 

@@ -11,7 +11,7 @@ namespace BusinessLayer.Interface
 {
     public interface IPostBL
     {
-        Task<PostModel> AddPost(IFormFile file, int userId);
+        Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl);
 
         Task<string> DeletePost(int userId, int postId);
         IList<PostModel> GetAllPosts(int userId);
@@ -25,5 +25,9 @@ namespace BusinessLayer.Interface
         Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId);
 
         IList<CommentsModel> GetAllComments(int userId, int postId);
+
+        Task<ShareModel> SharePost(int shareById, int postId);
+
+        IList<ShareModel> NumberOfShares(int userId, int postId);
     }
 }

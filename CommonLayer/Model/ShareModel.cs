@@ -8,13 +8,17 @@ namespace CommonLayer.Model
     public class ShareModel
     {
         public int Id { get; set; }
-        [ForeignKey("Registrations")]
-        public int PostById { get; set; }
+
         [ForeignKey("Posts")]
         public int PostId { get; set; }
-        public string Post { get; set; }
+
         [ForeignKey("Registrations")]
-        public int ShareById { get; set; }
+        public int SharedUserId { get; set; }
+
+        public bool IsRemoved { get; set; }
+
         public DateTime CreatedDate { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 }

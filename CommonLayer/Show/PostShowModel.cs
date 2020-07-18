@@ -7,6 +7,7 @@ namespace CommonLayer.Show
 {
     public class PostShowModel
     {
-        public IFormFile Post { get; set; }
+        public string Text { get; set; }
+        public string SiteUrl { get; set; }
     }
 }

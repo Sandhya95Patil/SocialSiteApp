@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RepositoryLayer.Service
 {
@@ -26,20 +27,26 @@ namespace RepositoryLayer.Service
         }
 
 
-        public async Task<PostModel> AddPost(IFormFile file, int userId)
+        public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
             {
+                string imageUrl = null;
                 var checkEmailId = this.appDBContext.Registrations.FirstOrDefault(g => g.Id==userId);
                 if (checkEmailId != null)
                 {
-                    ImageUpload imageUpload = new ImageUpload(this.configuration, file);
-                    var imageUrl = imageUpload.Upload(file);
+                    if (file != null)
+                    {
+                        ImageUpload imageUpload = new ImageUpload(this.configuration, file);
+                        imageUrl = imageUpload.Upload(file);
+                    }
 
                     var postDetails = new PostModel()
                     {
                        UserId=userId,
-                       Post= imageUrl,
+                       Text=text,
+                       ImageUrl = imageUrl,
+                       SiteUrl = siteUrl,
                        CreatedDate=DateTime.Now
 
                     };
@@ -51,7 +58,9 @@ namespace RepositoryLayer.Service
                         {
                             Id = postDetails.Id,
                             UserId=postDetails.UserId,
-                            Post=postDetails.Post,
+                            Text = postDetails.Text,
+                            ImageUrl=postDetails.ImageUrl,
+                            SiteUrl=postDetails.SiteUrl,
                             CreatedDate=postDetails.CreatedDate
                         };
                         return response;
@@ -198,7 +207,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId && g.UserId == commentShowModel.UserId);
+                var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId);
                 var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == commentById);
                 if (postExist != null && users != null)
                 {
@@ -253,6 +262,54 @@ namespace RepositoryLayer.Service
                 return null;
             }
             catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public async Task<ShareModel> SharePost(int shareById, int postId)
+        {
+            try
+            {
+                var postExists = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId);
+                var shareData = new ShareModel()
+                {
+                    PostId = postExists.Id,
+                    SharedUserId = shareById,
+                    IsRemoved = false,
+                    CreatedDate = DateTime.Now
+                };
+                this.appDBContext.Share.Add(shareData);
+                var result = await this.appDBContext.SaveChangesAsync();
+                if (result > 0)
+                {
+                    return shareData;
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<ShareModel> NumberOfShares(int userId, int postId)
+        {
+            try
+            {
+                var shareList = new List<ShareModel>();
+                var sharePosts = from table in this.appDBContext.Share where table.PostId == postId select table;
+                if (sharePosts != null)
+                {
+                    foreach (var share in sharePosts)
+                    {
+                        shareList.Add(share);
+                    }
+                    return shareList;
+                }
+                return null;
+            }
+            catch(Exception exception)
             {
                 throw new Exception(exception.Message);
             }

@@ -92,9 +92,6 @@ namespace SocialSiteApp
             services.AddTransient<IPostBL, PostBL>();
             services.AddTransient<IPostRL, PostRL>();
 
-            services.AddTransient<IShareBL, ShareBL>();
-            services.AddTransient<IShareRL, ShareRL>();
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

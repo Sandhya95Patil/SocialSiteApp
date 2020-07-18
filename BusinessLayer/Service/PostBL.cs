@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Interface;
+using CloudinaryDotNet.Actions;
 using CommonLayer.Model;
 using CommonLayer.Response;
 using CommonLayer.Show;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BusinessLayer.Service
 {
@@ -22,19 +24,12 @@ namespace BusinessLayer.Service
 
       
 
-        public async Task<PostModel> AddPost(IFormFile file, int userId)
+        public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
             {
-                if (file != null)
-                {
-                    var response = await this.postRL.AddPost(file, userId);
-                    return response;
-                }
-                else
-                {
-                    return null;
-                }
+                 var response = await this.postRL.AddPost(file, userId, text, siteUrl);
+                 return response;
             }
             catch (Exception exception)
             {
@@ -146,6 +141,40 @@ namespace BusinessLayer.Service
                 if (postId > 0)
                 {
                     return this.postRL.GetAllComments(userId, postId);
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public Task<ShareModel> SharePost(int shareById, int postId)
+        {
+            try
+            {
+                if (postId > 0)
+                {
+                    return this.postRL.SharePost(shareById, postId);
+
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<ShareModel> NumberOfShares(int userId, int postId)
+        {
+            try
+            {
+                if (postId > 0 && userId > 0)
+                {
+                    return this.postRL.NumberOfShares(userId, postId);
+
                 }
                 return null;
             }

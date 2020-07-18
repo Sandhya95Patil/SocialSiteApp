@@ -31,14 +31,14 @@ namespace SocialSiteApp.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> AddPost(IFormFile file)
+        public async Task<IActionResult> AddPost(IFormFile file, [FromForm]string text, string siteUrl)
         {
             try
             {
-                if (file != null)
+                if (file != null || text != null || siteUrl != null)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = await this.postBL.AddPost(file, claim);
+                    var data = await this.postBL.AddPost(file, claim, text, siteUrl);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = "Post Added Successfully", data });
@@ -50,7 +50,7 @@ namespace SocialSiteApp.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { status="false", message = "Please Select Image" });
+                    return this.BadRequest(new { status="false", message = "" });
                 }
             }
             catch (Exception exception)
@@ -172,13 +172,13 @@ namespace SocialSiteApp.Controllers
         {
             try
             {
-                if (postId > 0 && commentShowModel.UserId > 0)
+                if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
                     var data = await this.postBL.AddComment(commentShowModel, claim, postId);
                     if (data != null)
                     {
-                        return this.Ok(new { Status = "True", message = data.Name + " Commented On Your Post", data });
+                        return this.Ok(new { Status = "True", message = data.Name + " Commented On This Post", data });
                     }
                     else
                     {
@@ -187,7 +187,7 @@ namespace SocialSiteApp.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { status = "false", message = "Please Take PostId & PostId Greater Than 0" });
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId Greater Than 0" });
                 }
             }
             catch (Exception exception)
@@ -214,6 +214,66 @@ namespace SocialSiteApp.Controllers
                     else
                     {
                         return this.NotFound(new { status = "false", message = "No Any Comments On This Post Yet" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId Greater Than 0" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("{postId}/Share")]
+        public async Task<IActionResult> SharePost(int postId)
+        {
+            try
+            {
+                if (postId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = await this.postBL.SharePost(claim, postId);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "Post Share Successfully", data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId Greater Than 0" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("{postId}/Share")]
+        public IActionResult NumberOfShares(int postId)
+        {
+            try
+            {
+                if (postId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.postBL.NumberOfShares(claim, postId);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "Get All Shares", data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
                     }
                 }
                 else
