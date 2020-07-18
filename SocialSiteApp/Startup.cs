@@ -92,9 +92,6 @@ namespace SocialSiteApp
             services.AddTransient<IPostBL, PostBL>();
             services.AddTransient<IPostRL, PostRL>();
 
-            services.AddTransient<ICommentBL, CommentBL>();
-            services.AddTransient<ICommentRL, CommentRL>();
-
             services.AddTransient<IShareBL, ShareBL>();
             services.AddTransient<IShareRL, ShareRL>();
 

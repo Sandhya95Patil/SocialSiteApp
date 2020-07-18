@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using CommonLayer.Response;
 using CommonLayer.Show;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,8 @@ namespace RepositoryLayer.Service
             this.appDBContext = appDBContext;
             this.configuration = configuration;
         }
+
+
         public async Task<PostModel> AddPost(IFormFile file, int userId)
         {
             try
@@ -93,6 +96,8 @@ namespace RepositoryLayer.Service
                 throw new Exception(e.Message);
             }
         }
+
+
 
         public IList<PostModel> GetAllPosts(int userId)
         {
@@ -180,6 +185,70 @@ namespace RepositoryLayer.Service
                         likesList.Add(like);
                     }
                     return likesList;
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public async Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId)
+        {
+            try
+            {
+                var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId && g.UserId == commentShowModel.UserId);
+                var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == commentById);
+                if (postExist != null && users != null)
+                {
+                    var data = new CommentsModel()
+                    {
+                        PostId = postExist.Id,
+                        UserId = postExist.UserId,
+                        CommentById = users.Id,
+                        Comment = commentShowModel.Comment,
+                        CreatedDate = DateTime.Now
+                    };
+                    this.appDBContext.Comments.Add(data);
+                    var result = await this.appDBContext.SaveChangesAsync();
+                    if (result > 0)
+                    {
+                        var response = new CommentResponseModel()
+                        {
+                            Id = data.Id,
+                            PostId = data.PostId,
+                            UserId = data.UserId,
+                            CommentById = data.CommentById,
+                            Comment = data.Comment,
+                            Name = users.FirstName,
+                            CreatedDate = data.CreatedDate
+                        };
+                        return response;
+                    }
+                    return null;
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<CommentsModel> GetAllComments(int userId, int postId)
+        {
+            try
+            {
+                IList<CommentsModel> commentsList = new List<CommentsModel>();
+                var comments = from table in this.appDBContext.Comments where table.UserId == userId && table.PostId == postId select table;
+                foreach (var comment in comments)
+                {
+                    commentsList.Add(comment);
+                }
+                if (commentsList.Count > 0)
+                {
+                    return commentsList;
                 }
                 return null;
             }

@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using CommonLayer.Response;
 using CommonLayer.Show;
 using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Interface;
@@ -18,6 +19,9 @@ namespace BusinessLayer.Service
         {
             this.postRL = postRL;
         }
+
+      
+
         public async Task<PostModel> AddPost(IFormFile file, int userId)
         {
             try
@@ -57,6 +61,7 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
 
         public IList<PostModel> GetAllPosts(int userId)
         {
@@ -108,6 +113,39 @@ namespace BusinessLayer.Service
                 if (userId > 0 && postId > 0)
                 {
                     return this.postRL.LikesForPost(userId, postId);
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId)
+        {
+            try
+            {
+                if (postId > 0)
+                {
+                    return this.postRL.AddComment(commentShowModel, commentById, postId);
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+
+        public IList<CommentsModel> GetAllComments(int userId, int postId)
+        {
+            try
+            {
+                if (postId > 0)
+                {
+                    return this.postRL.GetAllComments(userId, postId);
                 }
                 return null;
             }

@@ -165,5 +165,66 @@ namespace SocialSiteApp.Controllers
                 return this.BadRequest(new { status = "false", message = exception.Message });
             }
         }
+
+        [HttpPost]
+        [Route("{postId}/Comment")]
+        public async Task<IActionResult> AddComment(CommentShowModel commentShowModel, int postId)
+        {
+            try
+            {
+                if (postId > 0 && commentShowModel.UserId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = await this.postBL.AddComment(commentShowModel, claim, postId);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = data.Name + " Commented On Your Post", data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId & PostId Greater Than 0" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("{postId}/Comments")]
+        public IActionResult GetAllComments(int postId)
+        {
+            try
+            {
+                if (postId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.postBL.GetAllComments(claim, postId);
+                    var count = data.Count();
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "All Comments For Post Id: " +postId, count, data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "No Any Comments On This Post Yet" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId Greater Than 0" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
     }
 }
