@@ -11,6 +11,6 @@ namespace BusinessLayer.Interface
     public interface ICommentBL
     {
         Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById);
-        (List<CommentsModel>,List<RegistrationModel>) GetAllComments(int userId, int postId);
+        IList<CommentsModel> GetAllComments(int userId, int postId);
     }
 }

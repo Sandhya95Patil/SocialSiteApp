@@ -63,22 +63,26 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public (List<CommentsModel>,List<RegistrationModel>) GetAllComments(int userId, int postId)
+        public IList<CommentsModel> GetAllComments(int userId, int postId)
         {
-            IList<CommentsModel> commentsList = new List<CommentsModel>();
-            IList<RegistrationModel> userList = new List<RegistrationModel>();
-            var comments = from table in this.appDBContext.Comments where table.UserId == userId && table.PostId == postId select table;
-            var users = from table in this.appDBContext.Registrations select table;
+            try
+            {
+                IList<CommentsModel> commentsList = new List<CommentsModel>();
+                var comments = from table in this.appDBContext.Comments where table.UserId == userId && table.PostId == postId select table;
                 foreach (var comment in comments)
                 {
                     commentsList.Add(comment);
                 }
-                
-                foreach (var user in users)
+                if (commentsList.Count > 0)
                 {
-                    userList.Add(user);
+                    return commentsList;
                 }
-                return (commentsList.ToList(), userList.ToList());
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            } 
         }
     }
 }

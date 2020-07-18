@@ -40,7 +40,7 @@ namespace SocialSiteApp.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { status = "false", message = "Please Take PostId & UserId" });
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId & PostId Greater Than 0" });
                 }
             }
             catch (Exception exception)
@@ -59,18 +59,18 @@ namespace SocialSiteApp.Controllers
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
                     var data = this.commentBL.GetAllComments(claim, postId);
-                    if (data.Item1 != null && data.Item2 != null)
+                    if (data != null)
                     {
-                        return this.Ok(new { Status = "True", message = "All Comments", data.Item1 });
+                        return this.Ok(new { Status = "True", message = "All Comments", data});
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
+                        return this.NotFound(new { status = "false", message = "Please Login With Your Register EmailId" });
                     }
                 }
                 else
                 {
-                    return this.BadRequest(new { status = "false", message = "Please Take PostId & UserId" });
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId Greater Than 0" });
                 }
             }
             catch (Exception exception)

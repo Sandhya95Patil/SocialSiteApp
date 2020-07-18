@@ -35,7 +35,7 @@ namespace BusinessLayer.Service
             }
         }
 
-        public (List<CommentsModel>, List<RegistrationModel>) GetAllComments(int userId, int postId)
+        public IList<CommentsModel> GetAllComments(int userId, int postId)
         {
             try
             {
