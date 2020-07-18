@@ -6,7 +6,6 @@ namespace CommonLayer.Show
 {
     public class LikeShowModel
     {
-        public int PostId { get; set; }
         public int UserId { get; set; }
     }
 }

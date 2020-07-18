@@ -14,5 +14,12 @@ namespace RepositoryLayer.Interface
 
         Task<string> DeletePost(int userId, int postId);
         IList<PostModel> GetAllPosts(int userId);
+
+        IList<PostModel> GetAllPostsWithComments(int userId);
+
+        Task<LikesModel> Like(LikeShowModel likeShowModel, int likeById, int postId);
+
+        IList<LikesModel> LikesForPost(int userId, int postId);
+
     }
 }

@@ -18,5 +18,7 @@ namespace RepositoryLayer.Context
         public DbSet<LikesModel> Likes { get; set; }
 
         public DbSet<CommentsModel> Comments { get; set; }
+
+        public DbSet<ShareModel> Share { get; set; }
     }
 }

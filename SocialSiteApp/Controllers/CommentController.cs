@@ -19,6 +19,7 @@ namespace SocialSiteApp.Controllers
         {
             this.commentBL = commentBL;
         }
+
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> AddComment(CommentShowModel commentShowModel)

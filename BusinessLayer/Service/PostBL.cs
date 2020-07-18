@@ -76,5 +76,45 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
+        public IList<PostModel> GetAllPostsWithComments(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LikesModel> Like(LikeShowModel likeShowModel, int likeById, int postId)
+        {
+            try
+            {
+                if (likeShowModel != null)
+                {
+                    return this.postRL.Like(likeShowModel, likeById, postId);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<LikesModel> LikesForPost(int userId, int postId)
+        {
+            try
+            {
+                if (userId > 0 && postId > 0)
+                {
+                    return this.postRL.LikesForPost(userId, postId);
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

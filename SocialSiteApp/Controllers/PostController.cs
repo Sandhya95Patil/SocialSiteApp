@@ -111,5 +111,59 @@ namespace SocialSiteApp.Controllers
                 return this.BadRequest(new { status = "false", message = exception.Message });
             }
         }
+
+        [HttpPost]
+        [Route("{postId}/Like")]
+        public async Task<IActionResult> Like(LikeShowModel likeShowModel, int postId)
+        {
+            try
+            {
+                if (postId > 0 && likeShowModel.UserId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = await this.postBL.Like(likeShowModel, claim, postId);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = data.UserId + " Number User Post Liked by Id: " + data.LikeById, data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "You Already Like This Post" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Login With Your Register EmailId" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("{postId}/Likes")]
+        public IActionResult LikesForPosts(int postId)
+        {
+            try
+            {
+                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                var data = this.postBL.LikesForPost(claim, postId);
+                var Count = data.Count();
+                if (data != null)
+                {
+                    return this.Ok(new { Status = "True", message = "All Likes", Count, data });
+                }
+                else
+                {
+                    return this.NotFound(new { status = "false", message = "Please Login First" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
     }
 }
