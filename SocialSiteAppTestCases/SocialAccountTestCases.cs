@@ -105,6 +105,18 @@ namespace SocialSiteAppTestCases
             Assert.IsType<OkObjectResult>(response);
         }
 
+        /// <summary>
+        /// given login details not provided return bad object result
+        /// </summary>
+        [Fact]
+        public void Given_Login_Details_NotProvided_Return_BadRequest()
+        {
+            LoginShowModel data = null;
+            var response = accountController.UserLogin(data);
+            Assert.IsType<BadRequestObjectResult>(response);
+        }
+
+
     }
 }
     

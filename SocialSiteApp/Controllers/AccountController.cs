@@ -64,15 +64,22 @@ namespace SocialSiteApp.Controllers
         {
             try
             {
-                var data = this.accountBL.UserLogin(loginShowModel);
-                if (data != null)
+                if(loginShowModel != null)
                 {
-                     var jsonToken = GenerateToken(data);
-                    return this.Ok(new { Status = "True", message = "Login Successfully", data, jsonToken });
+                    var data = this.accountBL.UserLogin(loginShowModel);
+                    if (data != null)
+                    {
+                        var jsonToken = GenerateToken(data);
+                        return this.Ok(new { Status = "True", message = "Login Successfully", data, jsonToken });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Email Id Not Present" });
+                    }
                 }
                 else
                 {
-                    return this.NotFound(new { status = "false", message = "Email Id Not Present" });
+                    return this.BadRequest(new { status = "false", message = "Please Provide Login Details" });
                 }
             }
             catch (Exception exception)
