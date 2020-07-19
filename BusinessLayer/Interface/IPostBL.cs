@@ -11,7 +11,7 @@ namespace BusinessLayer.Interface
 {
     public interface IPostBL
     {
-        Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl);
+        PostModel AddPost(IFormFile file, int userId, string text, string siteUrl);
 
         Task<string> DeletePost(int userId, int postId);
         IList<PostModel> GetAllPosts(int userId);

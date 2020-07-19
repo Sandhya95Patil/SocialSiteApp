@@ -15,7 +15,7 @@ using Xunit;
 
 namespace SocialSiteAppTestCases
 {
-    public class SocialAccountTestCases
+    public class AccountTestCases
     {
         IAccountBL accountBL;
         IAccountRL accountRL;
@@ -26,12 +26,12 @@ namespace SocialSiteAppTestCases
 
         public static string sqlConnectionString = "server=LAPTOP-JQPITHJ9;Database=SocialSiteDB;Trusted_Connection=true; MultipleActiveResultSets = true";
 
-        static SocialAccountTestCases()
+        static AccountTestCases()
         {
             appDBContext = new DbContextOptionsBuilder<AppDBContext>().UseSqlServer(sqlConnectionString).Options;
         }
 
-        public SocialAccountTestCases()
+        public AccountTestCases()
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json");
@@ -116,13 +116,46 @@ namespace SocialSiteAppTestCases
             Assert.IsType<BadRequestObjectResult>(response);
         }
 
+        /// <summary>
+        /// Given login details empty fiels=ds return bad request
+        /// </summary>
         [Fact]
-        public void Given_Login_Details_Empty_Fields_Return_Bad_Request()
+        public void Given_Login_Details_Empty_Fields_Return_NotFound()
         {
             var data = new LoginShowModel()
             {
                 Email = "",
                 Password = ""
+            };
+            var response = accountController.UserLogin(data);
+            Assert.IsType<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// given login details email id incorect return not found
+        /// </summary>
+        [Fact]
+        public void Given_Login_Details_EmailId_Incorrect_Return_NotFound()
+        {
+            var data = new LoginShowModel()
+            {
+                Email = "yashpatil@gmail.com",
+                Password = "yash"
+            };
+            var response = accountController.UserLogin(data);
+            Assert.IsType<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// given login details password incorrect return not found
+        /// </summary>
+        [Fact]
+        public void Given_Login_Details_Password_Incorrect_Return_NotFound()
+        {
+            var data = new LoginShowModel()
+            {
+                Email = "yashmore@gmail.com",
+                Password = "yash123"
             };
             var response = accountController.UserLogin(data);
             Assert.IsType<NotFoundObjectResult>(response);

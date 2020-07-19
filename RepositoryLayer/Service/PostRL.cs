@@ -36,7 +36,7 @@ namespace RepositoryLayer.Service
         /// <param name="text"></param>
         /// <param name="siteUrl"></param>
         /// <returns></returns>
-        public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
+        public PostModel AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
             {
@@ -60,8 +60,8 @@ namespace RepositoryLayer.Service
 
                     };
                     this.appDBContext.Posts.Add(postDetails);
-                    var result = await this.appDBContext.SaveChangesAsync();
-                    if (result > 0)
+                    var result = this.appDBContext.SaveChangesAsync();
+                    if (result != null)
                     {
                         var response = new PostModel()
                         {

@@ -22,23 +22,22 @@ namespace SocialSiteApp.Controllers
         IPostBL postBL;
         AppDBContext appDBContext;
         IConfiguration configuration;
-        public PostController(IPostBL postBL, AppDBContext appDBContext, IConfiguration configuration)
+        public PostController(IPostBL postBL, IConfiguration configuration)
         {
             this.postBL = postBL;
-            this.appDBContext = appDBContext;
             this.configuration = configuration;
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> AddPost(IFormFile file, [FromForm]string text, string siteUrl)
+        public IActionResult AddPost(IFormFile file, [FromForm]string text, string siteUrl)
         {
             try
             {
                 if (file != null || text != null || siteUrl != null)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = await this.postBL.AddPost(file, claim, text, siteUrl);
+                    var data = this.postBL.AddPost(file, claim, text, siteUrl);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = "Post Added Successfully", data });

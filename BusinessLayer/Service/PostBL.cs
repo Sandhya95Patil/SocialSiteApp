@@ -24,11 +24,11 @@ namespace BusinessLayer.Service
 
       
 
-        public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
+        public PostModel AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
             {
-                 var response = await this.postRL.AddPost(file, userId, text, siteUrl);
+                 var response = this.postRL.AddPost(file, userId, text, siteUrl);
                  return response;
             }
             catch (Exception exception)
