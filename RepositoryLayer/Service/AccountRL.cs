@@ -22,7 +22,7 @@ namespace RepositoryLayer.Service
 
 
 
-        public async Task<RegistrationResponseModel> UserSignUp(RegistrationShowModel registrationShowModel)
+        public RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
             {
@@ -40,8 +40,8 @@ namespace RepositoryLayer.Service
                         CreatedDate = DateTime.Now,
                     };
                     this.appDBContext.Registrations.Add(registrationDetails);
-                    var result = await this.appDBContext.SaveChangesAsync();
-                    if (result > 0)
+                    var result = this.appDBContext.SaveChangesAsync();
+                    if (result != null)
                     {
                         var response = new RegistrationResponseModel()
                         {
@@ -70,7 +70,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public async Task<RegistrationResponseModel> UserLogin(LoginShowModel loginShowModel)
+        public RegistrationResponseModel UserLogin(LoginShowModel loginShowModel)
         {
             try
             {

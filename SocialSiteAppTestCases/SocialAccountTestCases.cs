@@ -1,5 +1,6 @@
 using BusinessLayer.Interface;
 using BusinessLayer.Service;
+using CommonLayer.Response;
 using CommonLayer.Show;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,14 +33,14 @@ namespace SocialSiteAppTestCases
 
         public SocialAccountTestCases()
         {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json");
+            configuration = configurationBuilder.Build();
+
             var context = new AppDBContext(appDBContext);
             accountRL = new AccountRL(context);
             accountBL = new AccountBL(accountRL);
             accountController = new AccountController(accountBL, configuration);
-
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json");
-            configuration = configurationBuilder.Build();
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace SocialSiteAppTestCases
         }
 
         /// <summary>
-        /// 
+        /// given request for user registration email id already present return conflict result
         /// </summary>
         [Fact]
         public void Given_Request_For_UserRegistration_EmailAlreadyPresent_Return_ConflictResult()
@@ -89,20 +90,21 @@ namespace SocialSiteAppTestCases
             Assert.IsType<ConflictObjectResult>(response);
         }
 
+        /// <summary>
+        /// Given login details return ok result
+        /// </summary>
         [Fact]
-        public void Given_RequestFor_UserReg_If_EmptyFields_Return_BadRequest()
+        public void Given_Login_Details_Return_Ok_Result()
         {
-            var data = new RegistrationShowModel()
+            var data = new LoginShowModel()
             {
-                FirstName = "",
-                LastName = "",
-                Email = "",
-                Password = "",
-                MobileNumber = ""
+                Email = "yashmore@gmail.com",
+                Password = "yash"
             };
-            var response = accountController.UserSignUp(data);
-            Assert.IsType<BadRequestObjectResult>(response);
+            var response = accountController.UserLogin(data);
+            Assert.IsType<OkObjectResult>(response);
         }
+
     }
 }
     

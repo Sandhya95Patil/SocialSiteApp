@@ -60,11 +60,11 @@ namespace SocialSiteApp.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> UserLogin(LoginShowModel loginShowModel)
+        public IActionResult UserLogin(LoginShowModel loginShowModel)
         {
             try
             {
-                var data = await this.accountBL.UserLogin(loginShowModel);
+                var data = this.accountBL.UserLogin(loginShowModel);
                 if (data != null)
                 {
                      var jsonToken = GenerateToken(data);

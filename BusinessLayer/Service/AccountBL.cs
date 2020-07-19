@@ -18,13 +18,13 @@ namespace BusinessLayer.Service
             this.accountRL = accountRL;
         }
 
-        public async Task<RegistrationResponseModel> UserSignUp(RegistrationShowModel registrationShowModel)
+        public RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
             {
                 if (registrationShowModel != null)
                 {
-                    var response = await this.accountRL.UserSignUp(registrationShowModel);
+                    var response = this.accountRL.UserSignUp(registrationShowModel);
                     if (response != null)
                     {
                         return response;
@@ -42,13 +42,13 @@ namespace BusinessLayer.Service
             }
         }
 
-        public async Task<RegistrationResponseModel> UserLogin(LoginShowModel loginShowModel)
+        public RegistrationResponseModel UserLogin(LoginShowModel loginShowModel)
         {
             try
             {
                 if (loginShowModel != null)
                 {
-                    var response = await this.accountRL.UserLogin(loginShowModel);
+                    var response = this.accountRL.UserLogin(loginShowModel);
                     return response;
                 }
                 else
