@@ -25,7 +25,11 @@ namespace BusinessLayer.Service
                 if (registrationShowModel != null)
                 {
                     var response = await this.accountRL.UserSignUp(registrationShowModel);
-                    return response;
+                    if (response != null)
+                    {
+                        return response;
+                    }
+                    return null;
                 }
                 else
                 {

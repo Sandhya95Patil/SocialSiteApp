@@ -19,6 +19,7 @@ namespace SocialSiteAppTestCases
         IAccountBL accountBL;
         IAccountRL accountRL;
         IConfiguration configuration;
+        AccountController accountController;
 
         public static DbContextOptions<AppDBContext> appDBContext { get; }
 
@@ -34,6 +35,8 @@ namespace SocialSiteAppTestCases
             var context = new AppDBContext(appDBContext);
             accountRL = new AccountRL(context);
             accountBL = new AccountBL(accountRL);
+            accountController = new AccountController(accountBL, configuration);
+
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json");
             configuration = configurationBuilder.Build();
@@ -45,26 +48,45 @@ namespace SocialSiteAppTestCases
         [Fact]
         public void Given_Request_For_UserRegistration_ValidData_Return_OkResult()
         {
-            var controller = new AccountController(accountBL, configuration);
             var data = new RegistrationShowModel()
             {
                 FirstName = "Nidhi",
                 LastName = "Patil",
-                Email = "nidhipatil@gmail.com",
+                Email = "ndhuspatil@gmail.com",
                 Password = "Nidhu@12",
                 MobileNumber = "7897897865"
             };
-            var response = controller.UserSignUp(data);
+            var response = accountController.UserSignUp(data);
             Assert.IsType<OkObjectResult>(response);
         }
 
+        /// <summary>
+        /// Given request for user registration data not provided return bad request
+        /// </summary>
         [Fact]
         public void Given_Request_For_UserReg_DataNotProvided_Return_BadRequest()
         {
-            var controller = new AccountController(accountBL, configuration);
             RegistrationShowModel data = null;
-            var response = controller.UserSignUp(data);
+            var response = accountController.UserSignUp(data);
             Assert.IsType<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Fact]
+        public void Given_Request_For_UserRegistration_EmailAlreadyPresent_Return_ConflictResult()
+        {
+            var data = new RegistrationShowModel()
+            {
+                FirstName = "Yash",
+                LastName = "More",
+                Email = "yashmore@gmail.com",
+                Password = "yash",
+                MobileNumber = "7897897865"
+            };
+            var response = accountController.UserSignUp(data);
+            Assert.IsType<ConflictObjectResult>(response);
         }
     }
 }
