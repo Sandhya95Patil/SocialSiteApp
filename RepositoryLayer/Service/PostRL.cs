@@ -1,20 +1,22 @@
-﻿using CommonLayer.Model;
-using CommonLayer.Response;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using RepositoryLayer.Context;
-using RepositoryLayer.Interface;
-using RepositoryLayer.PostImage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
+﻿
 namespace RepositoryLayer.Service
 {
+    using CommonLayer.Model;
+    using CommonLayer.Response;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Configuration;
+    using RepositoryLayer.Context;
+    using RepositoryLayer.Interface;
+    using RepositoryLayer.PostImage;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Post Class
+    /// </summary>
     public class PostRL : IPostRL
     {
         private readonly AppDBContext appDBContext;
@@ -26,7 +28,14 @@ namespace RepositoryLayer.Service
             this.configuration = configuration;
         }
 
-
+        /// <summary>
+        /// Add post 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="userId"></param>
+        /// <param name="text"></param>
+        /// <param name="siteUrl"></param>
+        /// <returns></returns>
         public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
