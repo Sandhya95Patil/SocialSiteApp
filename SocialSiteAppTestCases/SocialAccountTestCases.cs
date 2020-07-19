@@ -116,7 +116,17 @@ namespace SocialSiteAppTestCases
             Assert.IsType<BadRequestObjectResult>(response);
         }
 
-
+        [Fact]
+        public void Given_Login_Details_Empty_Fields_Return_Bad_Request()
+        {
+            var data = new LoginShowModel()
+            {
+                Email = "",
+                Password = ""
+            };
+            var response = accountController.UserLogin(data);
+            Assert.IsType<NotFoundObjectResult>(response);
+        }
     }
 }
     
