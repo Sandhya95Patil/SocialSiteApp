@@ -22,29 +22,34 @@ namespace SocialSiteApp.Controllers
     public class AccountController : ControllerBase
     {
         IAccountBL accountBL;
-        AppDBContext appDBContext;
         IConfiguration configuration;
-        public AccountController(IAccountBL accountBL, AppDBContext appDBContext, IConfiguration configuration)
+        public AccountController(IAccountBL accountBL, IConfiguration configuration)
         {
             this.accountBL = accountBL;
-            this.appDBContext = appDBContext;
             this.configuration = configuration;
         }
 
         [HttpPost]
         [Route("SignUp")]
-        public async Task<IActionResult> UserSignUp(RegistrationShowModel registrationShowModel)
+        public IActionResult UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
             {
-                var data = await this.accountBL.UserSignUp(registrationShowModel);
-                if (data != null)
+                if (registrationShowModel != null)
                 {
-                    return this.Ok(new { Status = "True", message = "Registration Successfully Done", data });
+                    var data = this.accountBL.UserSignUp(registrationShowModel);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "Registration Successfully Done", data });
+                    }
+                    else
+                    {
+                        return this.Conflict(new { status = "false", message = "Email Id Already Present" });
+                    }
                 }
                 else
                 {
-                    return this.Conflict(new { status = "false", message = "Email Id Already Present" });
+                    return this.BadRequest(new { status = false, message="Data Not Provided" });
                 }
             }
             catch (Exception exception)

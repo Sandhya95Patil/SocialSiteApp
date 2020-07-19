@@ -25,8 +25,7 @@ namespace CommonLayer.Show
         [RegularExpression("^([a-z0-9](.?[a-z0-9]){5,}@g(oogle)?mail.com)$", ErrorMessage = "Enter valid gmail. eg. abc123@gmail.com")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password?")]
-        [RegularExpression("^(?=.*[0-9])(?=.*[a-z])(?=.*_)(?=.*[A-Z]).{4,8}$", ErrorMessage = "Password should be of 4 to 8 letters having atleast 1 upper case letter, 1 lower case letter, 1 digit and 1 special character")]
+        [Required(ErrorMessage = "Password required")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Mobile Number Is Required")]
