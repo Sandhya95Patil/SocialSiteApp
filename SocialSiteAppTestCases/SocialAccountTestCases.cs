@@ -88,6 +88,21 @@ namespace SocialSiteAppTestCases
             var response = accountController.UserSignUp(data);
             Assert.IsType<ConflictObjectResult>(response);
         }
+
+        [Fact]
+        public void Given_RequestFor_UserReg_If_EmptyFields_Return_BadRequest()
+        {
+            var data = new RegistrationShowModel()
+            {
+                FirstName = "",
+                LastName = "",
+                Email = "",
+                Password = "",
+                MobileNumber = ""
+            };
+            var response = accountController.UserSignUp(data);
+            Assert.IsType<BadRequestObjectResult>(response);
+        }
     }
 }
     
