@@ -13,7 +13,7 @@ namespace BusinessLayer.Interface
     {
         PostModel AddPost(IFormFile file, int userId, string text, string siteUrl);
 
-        Task<string> DeletePost(int userId, int postId);
+        bool DeletePost(int userId, int postId);
         IList<PostModel> GetAllPosts(int userId);
 
         IList<PostModel> GetAllPostsWithComments(int userId);

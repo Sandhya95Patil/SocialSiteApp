@@ -28,8 +28,15 @@ namespace BusinessLayer.Service
         {
             try
             {
-                 var response = this.postRL.AddPost(file, userId, text, siteUrl);
-                 return response;
+                if (file != null || text != null && siteUrl != null)
+                {
+                    var response = this.postRL.AddPost(file, userId, text, siteUrl);
+                    return response;
+                }
+                else
+                {
+                    return null;
+                }  
             }
             catch (Exception exception)
             {
@@ -37,18 +44,18 @@ namespace BusinessLayer.Service
             }
          }
 
-        public async Task<string> DeletePost(int userId, int postId)
+        public bool DeletePost(int userId, int postId)
         {
             try
             {
                 if (userId > 0 && postId > 0)
                 {
-                    var response = await this.postRL.DeletePost(userId, postId);
+                    var response = this.postRL.DeletePost(userId, postId);
                     return response;
                 }
                 else
                 {
-                    return null;
+                    return false;
                 }
             }
             catch (Exception exception)

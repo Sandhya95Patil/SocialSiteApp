@@ -90,7 +90,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public async Task<string> DeletePost(int userId, int postId)
+        public bool DeletePost(int userId, int postId)
         {
             try
             {
@@ -98,15 +98,12 @@ namespace RepositoryLayer.Service
                 if (postExist != null)
                 {
                     this.appDBContext.Posts.Remove(postExist);
-                }
-                var result = await this.appDBContext.SaveChangesAsync();
-                if (result > 0)
-                {
-                    return "Post Delete Successfully";
+                    this.appDBContext.SaveChangesAsync();
+                    return true;
                 }
                 else
                 {
-                    return null;
+                    return false;
                 }
             }
             catch(Exception e)

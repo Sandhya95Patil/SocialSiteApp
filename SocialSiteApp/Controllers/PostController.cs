@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BusinessLayer.Interface;
 using CommonLayer.Show;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Configuration;
@@ -20,14 +22,19 @@ namespace SocialSiteApp.Controllers
     public class PostController : ControllerBase
     {
         IPostBL postBL;
-        AppDBContext appDBContext;
         IConfiguration configuration;
         public PostController(IPostBL postBL, IConfiguration configuration)
         {
             this.postBL = postBL;
             this.configuration = configuration;
         }
-
+         
+        [HttpPost]
+        public ActionResult GetId()
+        {
+            return Content(ClaimsPrincipal.Current.FindFirst("Id").Value);
+        }
+        
         [HttpPost]
         [Route("")]
         public IActionResult AddPost(IFormFile file, [FromForm]string text, string siteUrl)
@@ -44,31 +51,32 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Please Login With Correct Credentials" });
+                         return this.NotFound(new { status = "false", message = "Please Login With Your Register Email" });
                     }
                 }
                 else
                 {
-                    return this.BadRequest(new { status="false", message = "" });
+                    return this.BadRequest(new { status="false", message = "Please Select Image or Write Your Thoughts or Site Url" });
                 }
             }
             catch (Exception exception)
             {
                 return this.BadRequest(new { status = "false", message = exception.Message });
             }
+        
         }
 
         [HttpDelete]
         [Route("{postId}")]
-        public async Task<IActionResult> DeletePost(int postId)
+        public IActionResult DeletePost(int postId)
         {
             try
             {
                 if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = await this.postBL.DeletePost(claim, postId);
-                    if (data != null)
+                    var data = this.postBL.DeletePost(claim, postId);
+                    if (data == true)
                     {
                         return this.Ok(new { Status = "True", message = "Post Deleted Successfully" });
                     }
