@@ -212,6 +212,36 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("{postId}/Comment/{commentId}")]
+        public IActionResult DeleteComment(int postId, int commentId)
+        {
+            try
+            {
+                if (postId > 0 && commentId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.postBL.DeleteComment(claim, postId, commentId);
+                    if (data == true)
+                    {
+                        return this.Ok(new { Status = "True", message = "Comment Deleted Successfully" });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Comment Id Not Found" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Take PostId & CommentId Greater Than 0" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
         [HttpGet]
         [Route("{postId}/Comments")]
         public IActionResult GetAllComments(int postId)

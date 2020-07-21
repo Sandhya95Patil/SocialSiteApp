@@ -270,6 +270,28 @@ namespace RepositoryLayer.Service
             }
         }
 
+        public bool DeleteComment(int commentById, int postId, int commentId)
+        {
+            try
+            {
+                var commentsExist = this.appDBContext.Comments.FirstOrDefault(g => g.CommentById == commentById && g.PostId == postId && g.Id == commentId);
+                if (commentsExist != null)
+                {
+                    this.appDBContext.Comments.Remove(commentsExist);
+                    this.appDBContext.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public IList<CommentsModel> GetAllComments(int userId, int postId)
         {
             try
@@ -340,5 +362,6 @@ namespace RepositoryLayer.Service
             }
         }
 
+ 
     }
 }

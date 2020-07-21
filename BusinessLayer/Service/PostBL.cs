@@ -137,6 +137,22 @@ namespace BusinessLayer.Service
         }
 
 
+        public bool DeleteComment(int commentById, int postId, int commentId)
+        {
+            try
+            {
+                if (commentById > 0 && postId > 0 && commentId > 0)
+                {
+                    return this.postRL.DeleteComment(commentById, postId, commentId);
+                }
+                return false;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
         public IList<CommentsModel> GetAllComments(int userId, int postId)
         {
             try
@@ -186,7 +202,6 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
         }
-
 
     }
 }

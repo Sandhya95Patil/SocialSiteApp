@@ -192,6 +192,9 @@ namespace SocialSiteAppTestCases
             Assert.IsType<CommentResponseModel>(response);
         }
 
+        /// <summary>
+        /// Check add comment on post but invalid post id return  null
+        /// </summary>
         [Fact]
         public void Check_Add_Comment_OnPost_But_Invalid_PostId_Return_Null()
         {
@@ -204,5 +207,7 @@ namespace SocialSiteAppTestCases
             var response = postBL.AddComment(comment, commentById, postId);
             Assert.Null(response);
         }
+
+
     }
 }

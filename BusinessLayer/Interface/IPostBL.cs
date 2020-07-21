@@ -22,6 +22,8 @@ namespace BusinessLayer.Interface
 
         CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId);
 
+        bool DeleteComment(int commentById, int postId, int commentId);
+
         IList<CommentsModel> GetAllComments(int userId, int postId);
 
         Task<ShareModel> SharePost(int shareById, int postId);
