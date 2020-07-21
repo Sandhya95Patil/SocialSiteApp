@@ -231,7 +231,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public async Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId)
+        public CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId)
         {
             try
             {
@@ -248,9 +248,8 @@ namespace RepositoryLayer.Service
                         CreatedDate = DateTime.Now
                     };
                     this.appDBContext.Comments.Add(data);
-                    var result = await this.appDBContext.SaveChangesAsync();
-                    if (result > 0)
-                    {
+                    var result = this.appDBContext.SaveChangesAsync();
+
                         var response = new CommentResponseModel()
                         {
                             Id = data.Id,
@@ -262,8 +261,6 @@ namespace RepositoryLayer.Service
                             CreatedDate = data.CreatedDate
                         };
                         return response;
-                    }
-                    return null;
                 }
                 return null;
             }

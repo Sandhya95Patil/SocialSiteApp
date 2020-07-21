@@ -120,7 +120,7 @@ namespace BusinessLayer.Service
             }
         }
 
-        public Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId)
+        public CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId)
         {
             try
             {

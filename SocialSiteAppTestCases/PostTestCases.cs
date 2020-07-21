@@ -2,6 +2,8 @@
 using BusinessLayer.Service;
 using CloudinaryDotNet.Actions;
 using CommonLayer.Model;
+using CommonLayer.Response;
+using CommonLayer.Show;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -161,6 +163,9 @@ namespace SocialSiteAppTestCases
             Assert.Equal(1, items.Count);
         }
 
+        /// <summary>
+        /// check count of likes on post return not equal
+        /// </summary>
         [Fact]
         public void Check_Count_Of_Likes_OnPOst_Return_NotEqual()
         {
@@ -169,6 +174,35 @@ namespace SocialSiteAppTestCases
             var response = postBL.LikesForPost(userId, postId);
             var items = Assert.IsType<List<LikesModel>>(response);
             Assert.NotEqual(20, items.Count);
+        }
+
+        /// <summary>
+        /// Check add comment on post 
+        /// </summary>
+        [Fact]
+        public void Check_Add_comment_On_Post_Valid_PostId_Return_Response()
+        {
+            var comment = new CommentShowModel()
+            {
+                Comment = "add comment testing time"
+            };
+            var commentById = 2;
+            var postId = 20;
+            var response = postBL.AddComment(comment, commentById, postId);
+            Assert.IsType<CommentResponseModel>(response);
+        }
+
+        [Fact]
+        public void Check_Add_Comment_OnPost_But_Invalid_PostId_Return_Null()
+        {
+            var comment = new CommentShowModel()
+            {
+                Comment = "add comment testing time"
+            };
+            var commentById = 2;
+            var postId = 50;
+            var response = postBL.AddComment(comment, commentById, postId);
+            Assert.Null(response);
         }
     }
 }

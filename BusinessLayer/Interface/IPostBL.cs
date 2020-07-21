@@ -20,7 +20,7 @@ namespace BusinessLayer.Interface
 
         IList<LikesModel> LikesForPost(int userId, int postId);
 
-        Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId);
+        CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId);
 
         IList<CommentsModel> GetAllComments(int userId, int postId);
 

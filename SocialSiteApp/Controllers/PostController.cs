@@ -104,7 +104,7 @@ namespace SocialSiteApp.Controllers
                 }
                 else
                 {
-                    return this.NotFound(new { status = "false", message = "Given Credentials Not Found" });
+                    return this.NotFound(new { status = "false", message = "Posts Not Found" });
                 }
             }
             catch (Exception exception)
@@ -150,7 +150,6 @@ namespace SocialSiteApp.Controllers
             }
         }
 
-        
 
         [HttpGet]
         [Route("{postId}/Likes")]
@@ -169,7 +168,7 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Login With Register EmailId" });
+                        return this.NotFound(new { status = "false", message = "Post Id Not Found" });
                     }
                 }
                 else
@@ -185,14 +184,14 @@ namespace SocialSiteApp.Controllers
 
         [HttpPost]
         [Route("{postId}/Comment")]
-        public async Task<IActionResult> AddComment(CommentShowModel commentShowModel, int postId)
+        public IActionResult AddComment(CommentShowModel commentShowModel, int postId)
         {
             try
             {
                 if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = await this.postBL.AddComment(commentShowModel, claim, postId);
+                    var data = this.postBL.AddComment(commentShowModel, claim, postId);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = data.Name + " Commented On This Post Id: "+postId, data });
