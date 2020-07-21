@@ -28,16 +28,10 @@ namespace SocialSiteApp.Controllers
             this.postBL = postBL;
             this.configuration = configuration;
         }
-         
-        [HttpPost]
-        public ActionResult GetId()
-        {
-            return Content(ClaimsPrincipal.Current.FindFirst("Id").Value);
-        }
         
         [HttpPost]
         [Route("")]
-        public IActionResult AddPost(IFormFile file, [FromForm]string text, string siteUrl)
+        public IActionResult AddPost(IFormFile file, [FromForm]string text, [FromForm]string siteUrl)
         {
             try
             {
@@ -82,12 +76,12 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Given Credentials Not Found" });
+                        return this.NotFound(new { status = "false", message = "Post Id Not Found" });
                     }
                 }
                 else
                 {
-                    return this.BadRequest(new { status = "false", message = "Please Select Image To Delete" });
+                    return this.BadRequest(new { status = "false", message = "Please Select Post id Greater Than 0" });
                 }
             }
             catch (Exception exception)
@@ -120,27 +114,34 @@ namespace SocialSiteApp.Controllers
         }
 
         [HttpPost]
-        [Route("{postId}/Like")]
-        public async Task<IActionResult> Like(LikeShowModel likeShowModel, int postId)
+        [Route("{postId}/LikeDisLike")]
+        public IActionResult Like(int postId)
         {
             try
             {
-                if (postId > 0 && likeShowModel.UserId > 0)
+                if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = await this.postBL.Like(likeShowModel, claim, postId);
+                    var data = this.postBL.Like(claim, postId);
                     if (data != null)
                     {
-                        return this.Ok(new { Status = "True", message = data.UserId + " Number User Post Liked by Id: " + data.LikeById, data });
+                        if (data.Like == true)
+                        {
+                            return this.Ok(new { Status = "True", message = data.UserId + " Number User Post Liked by Id: " + data.LikeById, data });
+                        }
+                        else
+                        {
+                            return this.Ok(new { status = "True", message = data.UserId + " Number User Post Unliked by Id: " + data.LikeById, data });
+                        }
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "You Already Like This Post" });
+                        return this.NotFound(new { status = "false", message = "Please Login With Your Register EmailId" });
                     }
                 }
                 else
                 {
-                    return this.BadRequest(new { status = "false", message = "Please Login With Your Register EmailId" });
+                    return this.BadRequest(new { status = "false", message = "Enter Post Id Must Be Greater Than 0" });
                 }
             }
             catch (Exception exception)
@@ -149,22 +150,31 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        
+
         [HttpGet]
         [Route("{postId}/Likes")]
         public IActionResult LikesForPosts(int postId)
         {
             try
             {
-                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                var data = this.postBL.LikesForPost(claim, postId);
-                var Count = data.Count();
-                if (data != null)
+                if (postId > 0)
                 {
-                    return this.Ok(new { Status = "True", message = "All Likes", Count, data });
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.postBL.LikesForPost(claim, postId);
+                    var Count = data.Count();
+                    if (data.Count > 0)
+                    {
+                        return this.Ok(new { Status = "True", message = "All Likes", Count, data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Login With Register EmailId" });
+                    }
                 }
                 else
                 {
-                    return this.NotFound(new { status = "false", message = "Please Login First" });
+                    return this.BadRequest(new { status = "false", message = "Post Id Must Be Greater Than zero" });
                 }
             }
             catch (Exception exception)
@@ -185,7 +195,7 @@ namespace SocialSiteApp.Controllers
                     var data = await this.postBL.AddComment(commentShowModel, claim, postId);
                     if (data != null)
                     {
-                        return this.Ok(new { Status = "True", message = data.Name + " Commented On This Post", data });
+                        return this.Ok(new { Status = "True", message = data.Name + " Commented On This Post Id: "+postId, data });
                     }
                     else
                     {

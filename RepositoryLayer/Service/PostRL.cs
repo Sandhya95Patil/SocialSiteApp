@@ -5,6 +5,7 @@ namespace RepositoryLayer.Service
     using CommonLayer.Response;
     using CommonLayer.Show;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using RepositoryLayer.Context;
     using RepositoryLayer.Interface;
@@ -60,24 +61,19 @@ namespace RepositoryLayer.Service
 
                     };
                     this.appDBContext.Posts.Add(postDetails);
-                    var result = this.appDBContext.SaveChangesAsync();
-                    if (result != null)
-                    {
+                    this.appDBContext.SaveChangesAsync();
+
+                    var postData = this.appDBContext.Posts.FirstOrDefault(g => g.UserId == userId && g.Text == text && g.ImageUrl == imageUrl && g.SiteUrl == siteUrl);
                         var response = new PostModel()
                         {
-                            Id = postDetails.Id,
-                            UserId=postDetails.UserId,
-                            Text = postDetails.Text,
-                            ImageUrl=postDetails.ImageUrl,
-                            SiteUrl=postDetails.SiteUrl,
-                            CreatedDate=postDetails.CreatedDate
+                            Id = postData.Id,
+                            UserId=postData.UserId,
+                            Text = postData.Text,
+                            ImageUrl=postData.ImageUrl,
+                            SiteUrl=postData.SiteUrl,
+                            CreatedDate=postData.CreatedDate
                         };
                         return response;
-                    }
-                    else
-                    {
-                        return null;
-                    }
                 }
                 else
                 {
@@ -132,54 +128,80 @@ namespace RepositoryLayer.Service
                }
         }
 
-        public IList<PostModel> GetAllPostsWithComments(int userId)
-        {
-            try
-            {
-                IList<PostModel> postLists = new List<PostModel>();
-               /* var postsWithComments = from posts in this.appDBContext.Posts
-                                        join comments in this.appDBContext.Comments on posts.UserId equals comments.UserId;*/
-                return postLists ;
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(exception.Message);
-            }
-        }
-
-        public async Task<LikesModel> Like(LikeShowModel likeShowModel, int likeById, int postId)
+        public LikesModel Like(int likeById, int postId)
         {
             try
             {
                 var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId);
                 var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == likeById);
-                var likes = this.appDBContext.Likes.FirstOrDefault(g => g.PostId == postId && g.LikeById == likeById);
-                if (postExist != null && users != null && likes == null)
+                var likes = this.appDBContext.Likes.FirstOrDefault(g => g.PostId == postId);
+                if (postExist != null && users != null)
                 {
-                    var data = new LikesModel()
+                    if (likes == null)
                     {
-                        UserId = postExist.UserId,
-                        PostId = postExist.Id,
-                        LikeById = likeById,
-                        CreatedDate = DateTime.Now
-                    };
-                    this.appDBContext.Likes.Add(data);
-                    var result = await this.appDBContext.SaveChangesAsync();
-                    if (result > 0)
-                    {
+                        var data = new LikesModel()
+                        {
+                            UserId = postExist.UserId,
+                            PostId = postExist.Id,
+                            LikeById = likeById,
+                            CreatedDate = DateTime.Now,
+                            Like = true
+                        };
+                        this.appDBContext.Likes.Add(data);
+                        this.appDBContext.SaveChangesAsync();
+
+                        var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
+
                         var response = new LikesModel()
                         {
-                            Id = data.Id,
-                            PostId = data.PostId,
-                            UserId = data.UserId,
-                            LikeById = data.LikeById,
-                            CreatedDate = data.CreatedDate
+                            Id = likeDetails.Id,
+                            PostId = likeDetails.PostId,
+                            UserId = likeDetails.UserId,
+                            LikeById = likeDetails.LikeById,
+                            Like=likeDetails.Like,
+                            CreatedDate = likeDetails.CreatedDate
                         };
                         return response;
                     }
+                    else if(likes.Like == true)
+                    {
+                        var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
+                        likeDetails.Like = false;
+                        this.appDBContext.SaveChangesAsync();
+
+                        var response = new LikesModel()
+                        {
+                            Id = likeDetails.Id,
+                            PostId = likeDetails.PostId,
+                            UserId = likeDetails.UserId,
+                            LikeById = likeDetails.LikeById,
+                            Like=likeDetails.Like,
+                            CreatedDate = likeDetails.CreatedDate
+                        };
+                        return response;
+                    }
+                    else                     
+                    {
+                        var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
+                        likeDetails.Like = true;
+                        this.appDBContext.SaveChangesAsync();
+
+                        var response = new LikesModel()
+                        {
+                            Id = likeDetails.Id,
+                            PostId = likeDetails.PostId,
+                            UserId = likeDetails.UserId,
+                            LikeById = likeDetails.LikeById,
+                            Like = likeDetails.Like,
+                            CreatedDate = likeDetails.CreatedDate
+                        };
+                        return response;
+                    }
+                }
+                else
+                {
                     return null;
                 }
-                return null;
             }
             catch (Exception exception)
             {
@@ -192,7 +214,7 @@ namespace RepositoryLayer.Service
             try
             {
                 IList<LikesModel> likesList = new List<LikesModel>();
-                var likes = from table in this.appDBContext.Likes where table.UserId == userId && table.PostId == postId select table;
+                var likes = from table in this.appDBContext.Likes where table.UserId == userId && table.PostId == postId && table.Like == true select table;
                 if (likes != null)
                 {
                     foreach (var like in likes)
@@ -320,5 +342,6 @@ namespace RepositoryLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
     }
 }

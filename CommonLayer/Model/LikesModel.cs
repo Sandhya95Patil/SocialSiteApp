@@ -12,8 +12,12 @@ namespace CommonLayer.Model
         public int PostId { get; set; }
         [ForeignKey("Posts")]
         public int UserId { get; set; }
+
+        public bool Like { get; set; }
+
         [ForeignKey("Registrations")]
         public int LikeById { get; set; }
+
         public DateTime CreatedDate { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using CloudinaryDotNet.Actions;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -85,7 +86,7 @@ namespace SocialSiteAppTestCases
             int userId = 4;
             var response=postBL.GetAllPosts(userId);
             var items = Assert.IsType<List<PostModel>>(response);
-            Assert.Equal(4, items.Count);
+            Assert.Equal(7, items.Count);
         }
 
         /// <summary>
@@ -123,24 +124,51 @@ namespace SocialSiteAppTestCases
             Assert.False(response);
         }
 
-
-
-
-
-
-
-        public class TestPrincipal : ClaimsPrincipal
+        /// <summary>
+        /// Check result of like on post 
+        /// </summary>
+        [Fact]
+        public void Check_Result_Of_Like_OnPost()
         {
-            public TestPrincipal(params Claim[] claims) : base(new TestIdentity(claims))
-            {
-            }
+            int likeById = 17;
+            int postId = 26;
+            var response = postBL.Like(likeById, postId);
+            Assert.IsType<LikesModel>(response);
         }
 
-        public class TestIdentity : ClaimsIdentity
+        /// <summary>
+        /// check result of like on post but like by id not found
+        /// </summary>
+        [Fact]
+        public void Check_Result_Of_Like_OnPost_But_LikeById_NotFound()
         {
-            public TestIdentity(params Claim[] claims) : base(claims)
-            {
-            }
+            int likeById = 100;
+            int postId = 26;
+            var response = postBL.Like(likeById, postId);
+            Assert.Null(response);
+        }
+
+        /// <summary>
+        /// Check count of likes on post
+        /// </summary>
+        [Fact]
+        public void Check_Count_Of_Likes_OnPost()
+        {
+            int userId = 3;
+            int postId = 29;
+            var response = postBL.LikesForPost(userId, postId);
+            var items = Assert.IsType<List<LikesModel>>(response);
+            Assert.Equal(1, items.Count);
+        }
+
+        [Fact]
+        public void Check_Count_Of_Likes_OnPOst_Return_NotEqual()
+        {
+            int userId = 3;
+            int postId = 29;
+            var response = postBL.LikesForPost(userId, postId);
+            var items = Assert.IsType<List<LikesModel>>(response);
+            Assert.NotEqual(20, items.Count);
         }
     }
 }

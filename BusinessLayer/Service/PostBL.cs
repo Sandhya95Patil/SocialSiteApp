@@ -84,23 +84,19 @@ namespace BusinessLayer.Service
             }
         }
 
-        public IList<PostModel> GetAllPostsWithComments(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LikesModel> Like(LikeShowModel likeShowModel, int likeById, int postId)
+        public LikesModel Like(int likeById, int postId)
         {
             try
             {
-                if (likeShowModel != null)
+                if (likeById > 0 && postId > 0)
                 {
-                    return this.postRL.Like(likeShowModel, likeById, postId);
+                    return this.postRL.Like(likeById, postId);
                 }
                 else
                 {
                     return null;
                 }
+
             }
             catch (Exception exception)
             {
@@ -190,5 +186,7 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
+
     }
 }

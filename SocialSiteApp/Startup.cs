@@ -67,7 +67,6 @@ namespace SocialSiteApp
                                 }
                             },
                             new string[] {}
-
                     }
                 });
                
