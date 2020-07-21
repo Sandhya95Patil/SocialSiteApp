@@ -157,7 +157,7 @@ namespace BusinessLayer.Service
         {
             try
             {
-                if (postId > 0)
+                if (postId > 0 && userId > 0)
                 {
                     return this.postRL.GetAllComments(userId, postId);
                 }

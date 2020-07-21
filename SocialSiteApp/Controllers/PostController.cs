@@ -233,7 +233,7 @@ namespace SocialSiteApp.Controllers
                 }
                 else
                 {
-                    return this.BadRequest(new { status = "false", message = "Please Take PostId & CommentId Greater Than 0" });
+                    return this.BadRequest(new { status = "false", message = "PostId & CommentId Must Be Greater Than 0" });
                 }
             }
             catch (Exception exception)

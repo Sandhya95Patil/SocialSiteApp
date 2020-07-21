@@ -160,7 +160,7 @@ namespace SocialSiteAppTestCases
             int postId = 29;
             var response = postBL.LikesForPost(userId, postId);
             var items = Assert.IsType<List<LikesModel>>(response);
-            Assert.Equal(1, items.Count);
+            Assert.Equal(1, items.Count());
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace SocialSiteAppTestCases
             int postId = 29;
             var response = postBL.LikesForPost(userId, postId);
             var items = Assert.IsType<List<LikesModel>>(response);
-            Assert.NotEqual(20, items.Count);
+            Assert.NotEqual(20, items.Count());
         }
 
         /// <summary>
@@ -208,6 +208,61 @@ namespace SocialSiteAppTestCases
             Assert.Null(response);
         }
 
+        /// <summary>
+        /// check delete comment on post valid comment id return true
+        /// </summary>
+        [Fact]
+        public void Check_Delete_Comment_OnPost_Valid_CommentId_Return_True()
+        {
+            var commnetById = 2;
+            var postId = 20;
+            var commentId = 9;
+            var response = postBL.DeleteComment(commnetById, postId, commentId);
+            Assert.True(response);
+        }
 
+        /// <summary>
+        /// chaeck delete comment on post invalid comment id return false
+        /// </summary>
+        [Fact]
+        public void Check_Delete_Comment_OnPost_InValid_CommentId_Return_False()
+        {
+            var commnetById = 2;
+            var postId = 20;
+            var commentId = 50;
+            var response = postBL.DeleteComment(commnetById, postId, commentId);
+            Assert.False(response);
+        }
+
+        /// <summary>
+        /// Check count of all comments return equal count
+        /// </summary>
+        [Fact]
+        public void Check_Count_Of_AllComments_Return_Equal()
+        {
+            int userId = 1;
+            int postId = 5;
+            var response = postBL.GetAllComments(userId, postId);
+            var items = Assert.IsType<List<CommentsModel>>(response);
+            Assert.Equal(6, items.Count());
+        }
+
+        [Fact]
+        public void Check_Count_Of_AllComments_But_UserId0_Return_Null()
+        {
+            int userId = 0;
+            int postId = 5;
+            var response = postBL.GetAllComments(userId, postId);
+            Assert.Null(response);
+        }
+
+        [Fact]
+        public void Check_Count_Of_AllComments_But_PostId0_Return_Null()
+        {
+            int userId = 1;
+            int postId = 0;
+            var response = postBL.GetAllComments(userId, postId);
+            Assert.Null(response);
+        }
     }
 }
