@@ -2,6 +2,7 @@
 using CommonLayer.Model;
 using CommonLayer.Response;
 using CommonLayer.Show;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
@@ -61,5 +62,26 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
+        public RegistrationResponseModel UserProfile(int userId, IFormFile file)
+        {
+            try
+            {
+                if (userId > 0 && file != null)
+                {
+                    var response = this.accountRL.UserProfile(userId, file);
+                    return response;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
     }
 }

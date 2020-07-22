@@ -247,6 +247,9 @@ namespace SocialSiteAppTestCases
             Assert.Equal(6, items.Count());
         }
 
+        /// <summary>
+        /// check count of all comments but user id 0 return null
+        /// </summary>
         [Fact]
         public void Check_Count_Of_AllComments_But_UserId0_Return_Null()
         {
@@ -256,6 +259,9 @@ namespace SocialSiteAppTestCases
             Assert.Null(response);
         }
 
+        /// <summary>
+        /// check count of all comments but post id 0 return null;
+        /// </summary>
         [Fact]
         public void Check_Count_Of_AllComments_But_PostId0_Return_Null()
         {

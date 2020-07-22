@@ -1,6 +1,7 @@
 ﻿using CommonLayer.Model;
 using CommonLayer.Response;
 using CommonLayer.Show;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,5 +13,7 @@ namespace RepositoryLayer.Interface
     {
         RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel);
         RegistrationResponseModel UserLogin(LoginShowModel loginShowModel);
+
+        RegistrationResponseModel UserProfile(int userId, IFormFile file);
     }
 }

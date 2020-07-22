@@ -13,6 +13,7 @@ namespace CommonLayer.Model
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Profile { get; set; }
         public string MobileNumber { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }

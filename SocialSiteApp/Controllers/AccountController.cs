@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BusinessLayer.Interface;
 using CommonLayer.Response;
 using CommonLayer.Show;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -80,6 +81,37 @@ namespace SocialSiteApp.Controllers
                 else
                 {
                     return this.BadRequest(new { status = "false", message = "Please Provide Login Details" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("Profile")]
+        public IActionResult UserProfile(IFormFile file)
+        {
+            try
+            {
+                if (file != null)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.accountBL.UserProfile(claim, file);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "Profile Uploaded Successfully", data, });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "User Not Present" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Select Image" });
                 }
             }
             catch (Exception exception)

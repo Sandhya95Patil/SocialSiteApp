@@ -1,9 +1,13 @@
 ﻿using CommonLayer.Model;
 using CommonLayer.Response;
 using CommonLayer.Show;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Remotion.Linq.Parsing;
 using RepositoryLayer.Context;
 using RepositoryLayer.Encrypt;
 using RepositoryLayer.Interface;
+using RepositoryLayer.PostImage;
 using System;
 using System.Linq;
 
@@ -12,12 +16,13 @@ namespace RepositoryLayer.Service
     public class AccountRL : IAccountRL
     {
         private readonly AppDBContext appDBContext;
-        public AccountRL(AppDBContext appDBContext)
+
+        IConfiguration configuration;
+        public AccountRL(AppDBContext appDBContext, IConfiguration configuration)
         {
             this.appDBContext = appDBContext;
+            this.configuration = configuration;
         }
-
-
 
         public RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel)
         {
@@ -92,6 +97,45 @@ namespace RepositoryLayer.Service
                     {
                         return null;
                     }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public RegistrationResponseModel UserProfile(int userId, IFormFile file)
+        {
+            try
+            {
+                string url = null;
+                if (file != null)
+                {
+                    ImageUpload imageUpload = new ImageUpload(this.configuration, file);
+                     url = imageUpload.Upload(file);
+                }
+                var userExists = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == userId);
+                if (userExists != null)
+                {
+                    userExists.Profile = url;
+                    this.appDBContext.SaveChangesAsync();
+
+                    var data = new RegistrationResponseModel()
+                    {
+                        Id=userExists.Id,
+                        FirstName = userExists.FirstName,
+                        LastName = userExists.LastName,
+                        Email = userExists.Email,
+                        MobileNumber = userExists.MobileNumber,
+                        Profile = url,
+                        CreatedDate = DateTime.Now
+                    };
+                    return data;
                 }
                 else
                 {
