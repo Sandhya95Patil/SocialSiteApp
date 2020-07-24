@@ -1,16 +1,20 @@
-﻿using BusinessLayer.Interface;
-using CommonLayer.Model;
-using CommonLayer.Response;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Http;
-using RepositoryLayer.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="AccountBL.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace BusinessLayer.Service
 {
+    using BusinessLayer.Interface;
+    using CommonLayer.Model;
+    using CommonLayer.Response;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Http;
+    using RepositoryLayer.Interface;
+    using System;
+    using System.Collections.Generic;
+
     public class AccountBL : IAccountBL
     {
         IAccountRL accountRL;
@@ -19,6 +23,11 @@ namespace BusinessLayer.Service
             this.accountRL = accountRL;
         }
 
+        /// <summary>
+        /// user signup
+        /// </summary>
+        /// <param name="registrationShowModel"></param>
+        /// <returns></returns>
         public RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
@@ -43,6 +52,11 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// user login
+        /// </summary>
+        /// <param name="loginShowModel"></param>
+        /// <returns></returns>
         public RegistrationResponseModel UserLogin(LoginShowModel loginShowModel)
         {
             try
@@ -63,6 +77,12 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// user profile
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public RegistrationResponseModel UserProfile(int userId, IFormFile file)
         {
             try
@@ -83,5 +103,16 @@ namespace BusinessLayer.Service
             }
         }
 
+        public IList<RegistrationResponseModel> GetAllUsers()
+        {
+            try
+            {
+                return this.accountRL.GetAllUsers();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

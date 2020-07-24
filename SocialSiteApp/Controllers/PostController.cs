@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using BusinessLayer.Interface;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using Microsoft.Extensions.Configuration;
-using RepositoryLayer.Context;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PostController.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace SocialSiteApp.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interface;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+
+    /// <summary>
+    /// Post controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-
     public class PostController : ControllerBase
     {
         IPostBL postBL;
@@ -29,6 +32,13 @@ namespace SocialSiteApp.Controllers
             this.configuration = configuration;
         }
         
+        /// <summary>
+        /// Add post method
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="text"></param>
+        /// <param name="siteUrl"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         public IActionResult AddPost(IFormFile file, [FromForm]string text, [FromForm]string siteUrl)
@@ -45,7 +55,7 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                         return this.NotFound(new { status = "false", message = "Please Login With Your Register Email" });
+                         return this.NotFound(new { status = "false", message = "User Not Found" });
                     }
                 }
                 else
@@ -60,6 +70,11 @@ namespace SocialSiteApp.Controllers
         
         }
 
+        /// <summary>
+        /// Delete post
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{postId}")]
         public IActionResult DeletePost(int postId)
@@ -76,7 +91,7 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Post Id Not Found" });
+                        return this.NotFound(new { status = "false", message = "User Id & Post Id Not Found" });
                     }
                 }
                 else
@@ -90,6 +105,10 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all posts
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public IActionResult GetAllPosts()
@@ -113,6 +132,11 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Like on post
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{postId}/LikeDisLike")]
         public IActionResult Like(int postId)
@@ -136,7 +160,7 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Please Login With Your Register EmailId" });
+                        return this.NotFound(new { status = "false", message = "Post Id Not Found" });
                     }
                 }
                 else
@@ -150,7 +174,11 @@ namespace SocialSiteApp.Controllers
             }
         }
 
-
+        /// <summary>
+        /// likes on post
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{postId}/Likes")]
         public IActionResult LikesForPosts(int postId)
@@ -182,6 +210,12 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// add comment on post
+        /// </summary>
+        /// <param name="commentShowModel"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{postId}/Comment")]
         public IActionResult AddComment(CommentShowModel commentShowModel, int postId)
@@ -198,7 +232,7 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
+                        return this.NotFound(new { status = "false", message = "Post id Not Found" });
                     }
                 }
                 else
@@ -212,6 +246,12 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// delete comment 
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{postId}/Comment/{commentId}")]
         public IActionResult DeleteComment(int postId, int commentId)
@@ -242,6 +282,11 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// get all comments
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{postId}/Comments")]
         public IActionResult GetAllComments(int postId)
@@ -273,23 +318,28 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// share post
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{postId}/Share")]
-        public async Task<IActionResult> SharePost(int postId)
+        public IActionResult SharePost(int postId)
         {
             try
             {
                 if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = await this.postBL.SharePost(claim, postId);
+                    var data = this.postBL.SharePost(claim, postId);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = "Post Share Successfully", data });
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
+                        return this.NotFound(new { status = "false", message = "Post Id Not Found" });
                     }
                 }
                 else
@@ -303,6 +353,11 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// get all shared post
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{postId}/Share")]
         public IActionResult NumberOfShares(int postId)
@@ -319,12 +374,42 @@ namespace SocialSiteApp.Controllers
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "Please Login With Your Register Email & Password" });
+                        return this.NotFound(new { status = "false", message = "Post Id Not Found" });
                     }
                 }
                 else
                 {
                     return this.BadRequest(new { status = "false", message = "Please Take PostId Greater Than 0" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpDelete]
+        [Route("Share/{shareId}")]
+        public IActionResult DeleteSharePost(int shareId)
+        {
+            try
+            {
+                if (shareId > 0)
+                {
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.postBL.DeleteSharePost(claim, shareId);
+                    if (data == true)
+                    {
+                        return this.Ok(new { Status = "True", message = "Shared Post Deleted Successfully" });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Share Id Not Found" });
+                    }
+                }
+                else
+                {
+                    return this.BadRequest(new { status = "false", message = "Please Take Share Id Greater Than 0" });
                 }
             }
             catch (Exception exception)

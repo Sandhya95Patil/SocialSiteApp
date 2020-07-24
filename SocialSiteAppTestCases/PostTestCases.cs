@@ -1,30 +1,28 @@
-﻿using BusinessLayer.Interface;
-using BusinessLayer.Service;
-using CloudinaryDotNet.Actions;
-using CommonLayer.Model;
-using CommonLayer.Response;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using RepositoryLayer.Context;
-using RepositoryLayer.Interface;
-using RepositoryLayer.Service;
-using SocialSiteApp.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using Xunit;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PostTestCases.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace SocialSiteAppTestCases
 {
+    using BusinessLayer.Interface;
+    using BusinessLayer.Service;
+    using CommonLayer.Model;
+    using CommonLayer.Response;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using RepositoryLayer.Context;
+    using RepositoryLayer.Interface;
+    using RepositoryLayer.Service;
+    using SocialSiteApp.Controllers;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Xunit;
+
+
     public class PostTestCases
     {
         IPostBL postBL;
@@ -57,7 +55,7 @@ namespace SocialSiteAppTestCases
         /// Given post request all fields null return bad request
         /// </summary>
         [Fact]
-        public void Given_Post_Request_All_Fields_Null_Return_BadRequest()
+        public void Given_Post_Request_All_Fields_Null_Return_Null()
         {
             IFormFile file = null;
             string text = null;
@@ -70,7 +68,7 @@ namespace SocialSiteAppTestCases
         /// Given add post to social site return ok  
         /// </summary>
         [Fact]
-        public void Given_Post_Return_OkResult()
+        public void Given_PostAddSiteUrl_Return_Response()
         {
             IFormFile file =null;
             string text = "test case";
@@ -269,6 +267,79 @@ namespace SocialSiteAppTestCases
             int postId = 0;
             var response = postBL.GetAllComments(userId, postId);
             Assert.Null(response);
+        }
+
+        /// <summary>
+        /// check share post valid data return response
+        /// </summary>
+        [Fact]
+        public void Check_SharePost_ValidData_Return_Reponse()
+        {
+            int sharebyId = 3;
+            int postId = 14;
+            var response = postBL.SharePost(sharebyId, postId);
+            Assert.IsType<ShareModel>(response);
+        }
+
+        /// <summary>
+        /// check share post invalid data return response
+        /// </summary>
+        [Fact]
+        public void Check_SharePost_InValidData_Return_Reponse()
+        {
+            int sharebyId = 40;
+            int postId = 44;
+            var response = postBL.SharePost(sharebyId, postId);
+            Assert.Null(response);
+        }
+
+        /// <summary>
+        /// check count of share posts return equal
+        /// </summary>
+        [Fact]
+        public void Check_Count_Of_SharePosts_Return_Equal()
+        {
+            int userId = 4;
+            int postId = 8;
+            var response = postBL.NumberOfShares(userId, postId);
+            var items = Assert.IsType<List<ShareModel>>(response);
+            Assert.Equal(1, items.Count());
+        }
+
+        /// <summary>
+        /// check count of share post invalid post id & user id return equal
+        /// </summary>
+        [Fact]
+        public void Check_Count_Of_SharePosts_InvalidPostIdAndUserId_Return_Equal()
+        {
+            int userId = 100;
+            int postId = 40;
+            var response = postBL.NumberOfShares(userId, postId);
+            var items = Assert.IsType<List<ShareModel>>(response);
+            Assert.Equal(0, items.Count());
+        }
+
+        /// <summary>
+        /// check delete post valid user id & share id return true
+        /// </summary>
+        [Fact] public void Check_Delete_SharePost_ValidData_Return_True()
+        {
+            int userId = 3;
+            int shareId = 8;
+            var response = postBL.DeleteSharePost(userId, shareId);
+            Assert.True(response);
+        }
+
+        /// <summary>
+        /// check delete post invalid user id & share id return true
+        /// </summary>
+        [Fact]
+        public void Check_Delete_SharePost_InValidData_Return_True()
+        {
+            int userId = 100;
+            int shareId = 50;
+            var response = postBL.DeleteSharePost(userId, shareId);
+            Assert.False(response);
         }
     }
 }

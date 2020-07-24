@@ -1,9 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PasswordEncrypt.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace RepositoryLayer.Encrypt
 {
+    using System;
+    using System.Text;
+
     public class PasswordEncrypt
     {
         public static string Encryptdata(string password)

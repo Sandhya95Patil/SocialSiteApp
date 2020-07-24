@@ -1,11 +1,15 @@
-﻿
+﻿//-----------------------------------------------------------------------
+// <copyright file="PostRL.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace RepositoryLayer.Service
 {
     using CommonLayer.Model;
     using CommonLayer.Response;
     using CommonLayer.Show;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using RepositoryLayer.Context;
     using RepositoryLayer.Interface;
@@ -314,25 +318,28 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public async Task<ShareModel> SharePost(int shareById, int postId)
+        public ShareModel SharePost(int shareById, int postId)
         {
             try
             {
                 var postExists = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId);
-                var shareData = new ShareModel()
+                if (postExists != null)
                 {
-                    PostId = postExists.Id,
-                    SharedUserId = shareById,
-                    IsRemoved = false,
-                    CreatedDate = DateTime.Now
-                };
-                this.appDBContext.Share.Add(shareData);
-                var result = await this.appDBContext.SaveChangesAsync();
-                if (result > 0)
-                {
+                    var shareData = new ShareModel()
+                    {
+                        PostId = postExists.Id,
+                        SharedUserId = shareById,
+                        IsRemoved = false,
+                        CreatedDate = DateTime.Now
+                    };
+                    this.appDBContext.Share.Add(shareData);
+                    var result = this.appDBContext.SaveChangesAsync();
                     return shareData;
                 }
-                return null;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception exception)
             {
@@ -362,6 +369,26 @@ namespace RepositoryLayer.Service
             }
         }
 
- 
+        public bool DeleteSharePost(int userId, int sharePostId)
+        {
+            try
+            {
+                var sharePostExists = this.appDBContext.Share.FirstOrDefault(g => g.Id == sharePostId && g.SharedUserId == userId);
+                if (sharePostExists != null)
+                {
+                    sharePostExists.IsRemoved = true;
+                    this.appDBContext.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

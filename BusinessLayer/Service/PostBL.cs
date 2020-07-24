@@ -1,19 +1,24 @@
-﻿using BusinessLayer.Interface;
-using CloudinaryDotNet.Actions;
-using CommonLayer.Model;
-using CommonLayer.Response;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Http;
-using RepositoryLayer.Interface;
-using RepositoryLayer.Migrations;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PostBL.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace BusinessLayer.Service
 {
+    using BusinessLayer.Interface;
+    using CommonLayer.Model;
+    using CommonLayer.Response;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Http;
+    using RepositoryLayer.Interface;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Post class
+    /// </summary>
     public class PostBL : IPostBL
     {
         IPostRL postRL;
@@ -22,8 +27,14 @@ namespace BusinessLayer.Service
             this.postRL = postRL;
         }
 
-      
-
+        /// <summary>
+        /// add post
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="userId"></param>
+        /// <param name="text"></param>
+        /// <param name="siteUrl"></param>
+        /// <returns></returns>
         public PostModel AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
@@ -44,6 +55,12 @@ namespace BusinessLayer.Service
             }
          }
 
+        /// <summary>
+        /// delete post
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public bool DeletePost(int userId, int postId)
         {
             try
@@ -64,7 +81,11 @@ namespace BusinessLayer.Service
             }
         }
 
-
+        /// <summary>
+        /// get all posts
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IList<PostModel> GetAllPosts(int userId)
         {
             try
@@ -84,6 +105,12 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// like on post
+        /// </summary>
+        /// <param name="likeById"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public LikesModel Like(int likeById, int postId)
         {
             try
@@ -104,6 +131,12 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// likes on post
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IList<LikesModel> LikesForPost(int userId, int postId)
         {
             try
@@ -120,6 +153,13 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// add comment
+        /// </summary>
+        /// <param name="commentShowModel"></param>
+        /// <param name="commentById"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId)
         {
             try
@@ -136,7 +176,13 @@ namespace BusinessLayer.Service
             }
         }
 
-
+        /// <summary>
+        /// delete comment
+        /// </summary>
+        /// <param name="commentById"></param>
+        /// <param name="postId"></param>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
         public bool DeleteComment(int commentById, int postId, int commentId)
         {
             try
@@ -153,6 +199,12 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// get all comment
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IList<CommentsModel> GetAllComments(int userId, int postId)
         {
             try
@@ -169,7 +221,13 @@ namespace BusinessLayer.Service
             }
         }
 
-        public Task<ShareModel> SharePost(int shareById, int postId)
+        /// <summary>
+        /// share post
+        /// </summary>
+        /// <param name="shareById"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
+        public ShareModel SharePost(int shareById, int postId)
         {
             try
             {
@@ -186,6 +244,12 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// get all share posts
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IList<ShareModel> NumberOfShares(int userId, int postId)
         {
             try
@@ -203,5 +267,23 @@ namespace BusinessLayer.Service
             }
         }
 
+        public bool DeleteSharePost(int userId, int sharePostId)
+        {
+            try
+            {
+                if (userId > 0 && sharePostId > 0)
+                {
+                    return this.postRL.DeleteSharePost(userId, sharePostId);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

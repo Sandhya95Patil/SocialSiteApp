@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace CommonLayer.Response
 {
+    using System;
+
     public class RegistrationResponseModel
     {
         public int Id { get; set; }

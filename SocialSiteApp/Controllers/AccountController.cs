@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using BusinessLayer.Interface;
-using CommonLayer.Response;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using RepositoryLayer.Context;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="AccountController.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace SocialSiteApp.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Text;
+    using BusinessLayer.Interface;
+    using CommonLayer.Response;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -30,6 +33,11 @@ namespace SocialSiteApp.Controllers
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// User signup
+        /// </summary>
+        /// <param name="registrationShowModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("SignUp")]
         public IActionResult UserSignUp(RegistrationShowModel registrationShowModel)
@@ -59,6 +67,11 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// user login
+        /// </summary>
+        /// <param name="loginShowModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Login")]
         public IActionResult UserLogin(LoginShowModel loginShowModel)
@@ -89,6 +102,11 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        /// <summary>
+        /// user profile
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
         [Route("Profile")]
@@ -120,6 +138,32 @@ namespace SocialSiteApp.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("")]
+        public IActionResult GetAllUsers()
+        {
+            try
+            {
+                    var data = this.accountBL.GetAllUsers();
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "Get All Users", data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "Users Not Fonud" });
+                    }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+        /// <summary>
+        /// generate token
+        /// </summary>
+        /// <param name="responseData"></param>
+        /// <returns></returns>
         private string GenerateToken(RegistrationResponseModel responseData)
         {
             try

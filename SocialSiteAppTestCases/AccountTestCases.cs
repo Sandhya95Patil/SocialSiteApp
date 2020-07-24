@@ -1,20 +1,23 @@
-using BusinessLayer.Interface;
-using BusinessLayer.Service;
-using CommonLayer.Response;
-using CommonLayer.Show;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using RepositoryLayer.Context;
-using RepositoryLayer.Interface;
-using RepositoryLayer.Service;
-using SocialSiteApp.Controllers;
-using System;
-using System.Threading.Tasks;
-using Xunit;
-
+//-----------------------------------------------------------------------
+// <copyright file="AccountTestCases.cs" company="BridgeLabz">
+//     Company copyright tag.
+// </copyright>
+// <creater name="Sandhya Patil"/>
+//-----------------------------------------------------------------------
 namespace SocialSiteAppTestCases
 {
+    using BusinessLayer.Interface;
+    using BusinessLayer.Service;
+    using CommonLayer.Show;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using RepositoryLayer.Context;
+    using RepositoryLayer.Interface;
+    using RepositoryLayer.Service;
+    using SocialSiteApp.Controllers;
+    using Xunit;
+
     public class AccountTestCases
     {
         IAccountBL accountBL;
@@ -38,7 +41,7 @@ namespace SocialSiteAppTestCases
             configuration = configurationBuilder.Build();
 
             var context = new AppDBContext(appDBContext);
-            accountRL = new AccountRL(context);
+            accountRL = new AccountRL(context, configuration);
             accountBL = new AccountBL(accountRL);
             accountController = new AccountController(accountBL, configuration);
         }
