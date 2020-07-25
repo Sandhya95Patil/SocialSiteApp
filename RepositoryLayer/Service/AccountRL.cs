@@ -15,6 +15,7 @@ namespace RepositoryLayer.Service
     using RepositoryLayer.Context;
     using RepositoryLayer.Encrypt;
     using RepositoryLayer.Interface;
+    using RepositoryLayer.Migrations;
     using RepositoryLayer.PostImage;
     using System;
     using System.Collections.Generic;
@@ -312,7 +313,7 @@ namespace RepositoryLayer.Service
             try
             {
                 IList<RegistrationResponseModel> friendsList = new List<RegistrationResponseModel>();
-                var friendsExists = from addFriend in this.appDBContext.AddFriends
+                var friendsExists = from addFriend in this.appDBContext.AddFriends where addFriend.UserId == userId
                                     join reg in this.appDBContext.Registrations on addFriend.FriendId equals reg.Id
                                     where addFriend.IsConformed == true
                                     select new RegistrationResponseModel()

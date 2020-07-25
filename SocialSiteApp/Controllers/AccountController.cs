@@ -161,20 +161,27 @@ namespace SocialSiteApp.Controllers
         }
 
         [HttpPost]
-        [Route("{addUserId}/Friend")]
-        public IActionResult AddFriend(int addUserId)
+        [Route("{userId}/Friend")]
+        public IActionResult AddFriend(int userId)
         {
             try
             {
-                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                var data = this.accountBL.AddFriend(addUserId, claim);
-                if (data != null)
+                if (userId > 0)
                 {
-                    return this.Ok(new { Status = "True", message = "Friend Request Sent Successfully",data});
+                    var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                    var data = this.accountBL.AddFriend(userId, claim);
+                    if (data != null)
+                    {
+                        return this.Ok(new { Status = "True", message = "Friend Request Sent Successfully", data });
+                    }
+                    else
+                    {
+                        return this.NotFound(new { status = "false", message = "User Not Found" });
+                    }
                 }
                 else
                 {
-                    return this.NotFound(new { status = "false", message = "User Not Found" });
+                    return this.BadRequest(new { status = "False", message = "Friend User Id Must Be Greater Than 0" });
                 }
             }
             catch (Exception exception)

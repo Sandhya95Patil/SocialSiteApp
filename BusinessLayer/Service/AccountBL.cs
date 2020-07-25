@@ -103,6 +103,10 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// get all users
+        /// </summary>
+        /// <returns></returns>
         public IList<RegistrationResponseModel> GetAllUsers()
         {
             try
@@ -115,11 +119,24 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// request send 
+        /// </summary>
+        /// <param name="friendId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public AddFreindModel AddFriend(int friendId, int userId)
         {
             try
             {
-                return this.accountRL.AddFriend(friendId, userId);
+                if (friendId > 0 && userId > 0)
+                {
+                    return this.accountRL.AddFriend(friendId, userId);
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception exception)
             {
@@ -127,11 +144,25 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// request accept
+        /// </summary>
+        /// <param name="friendId"></param>
+        /// <param name="userId"></param>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
         public AddFreindModel RequestAccept(int friendId, int userId, int requestId)
         {
             try
             {
-                return this.accountRL.RequestAccept(friendId, userId, requestId);
+                if (friendId > 0 && userId > 0 && requestId > 0)
+                {
+                    return this.accountRL.RequestAccept(friendId, userId, requestId);
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception exception)
             {
@@ -139,6 +170,13 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// request delete
+        /// </summary>
+        /// <param name="friendId"></param>
+        /// <param name="userId"></param>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
         public AddFreindModel RequestDelete(int friendId, int userId, int requestId)
         {
             try
@@ -151,6 +189,11 @@ namespace BusinessLayer.Service
             }
         }
 
+        /// <summary>
+        /// get all friends
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IList<RegistrationResponseModel> GetAllFriends(int userId)
         {
             try

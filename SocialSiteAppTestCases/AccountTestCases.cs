@@ -8,6 +8,8 @@ namespace SocialSiteAppTestCases
 {
     using BusinessLayer.Interface;
     using BusinessLayer.Service;
+    using CommonLayer.Model;
+    using CommonLayer.Response;
     using CommonLayer.Show;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,8 @@ namespace SocialSiteAppTestCases
     using RepositoryLayer.Interface;
     using RepositoryLayer.Service;
     using SocialSiteApp.Controllers;
+    using System.Collections.Generic;
+    using System.Reflection;
     using Xunit;
 
     public class AccountTestCases
@@ -162,6 +166,101 @@ namespace SocialSiteAppTestCases
             };
             var response = accountController.UserLogin(data);
             Assert.IsType<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// check valid friend id & user id return response
+        /// </summary>
+        [Fact]
+        public void Check_ValidFriendIdAndUserId_return_Reponse()
+        {
+            var friendId = 17;
+            var userId = 3;
+            var response = accountBL.AddFriend(friendId, userId);
+            Assert.IsType<AddFreindModel>(response);
+        }
+
+        /// <summary>
+        /// check friend id not exist return null
+        /// </summary>
+        [Fact]
+        public void Check_FriendId_NotExist_Return_Null()
+        {
+            var friendId = 100;
+            var userId = 3;
+            var response = accountBL.AddFriend(friendId, userId);
+            Assert.Null(response);
+        }
+
+        /// <summary>
+        /// check friend id zero return null
+        /// </summary>
+        [Fact]
+        public void Check_FriendId_Zero_Return_Null()
+        {
+            var friendId = 0;
+            var userId = 3;
+            var response = accountBL.AddFriend(friendId, userId);
+            Assert.Null(response);
+        }
+
+        /// <summary>
+        /// check friend request accept by given friend id return response
+        /// </summary>
+        [Fact]
+        public void Check_FriendRequest_Accept_By_Given_FriendId_Return_Response()
+        {
+            var friendId = 12;
+            var userId = 3;
+            var requestId = 4;
+            var response = accountBL.RequestAccept(friendId, userId, requestId);
+            Assert.IsType<AddFreindModel>(response);
+        }
+
+        /// <summary>
+        /// check friend request delete by given friend id return response
+        /// </summary>
+        [Fact]
+        public void Check_FriendRequest_Delete_By_Given_FriendId_Return_Response()
+        {
+            var friendId = 12;
+            var userId = 3;
+            var requestId = 4;
+            var response = accountBL.RequestAccept(friendId, userId, requestId);
+            Assert.IsType<AddFreindModel>(response);
+        }
+
+        /// <summary>
+        /// check friend request invalid friend id return null
+        /// </summary>
+        [Fact]
+        public void Check_FriendRequest_InvalidFriendId_Return_Null()
+        {
+            var friendId = 100;
+            var userId = 3;
+            var requestId = 4;
+            var response = accountBL.RequestAccept(friendId, userId, requestId);
+            Assert.Null(response);
+        }
+
+        /// <summary>
+        /// check count of all friend of user
+        /// </summary>
+        [Fact]
+        public void Check_Count_AllFriends_Of_User()
+        {
+            int userId = 3;
+            var response = accountBL.GetAllFriends(userId);
+            var item = Assert.IsType<List<RegistrationResponseModel>>(response);
+            Assert.Equal(4, item.Count);
+        }
+
+        [Fact]
+        public void Check_Count_Of_AllFriends_Of_User_But_UserId_NotFound_Return_Null()
+        {
+            int userId = 20;
+            var response = accountBL.GetAllFriends(userId);
+            Assert.Null(response);
         }
     }
 }
