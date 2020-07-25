@@ -21,5 +21,9 @@ namespace RepositoryLayer.Interface
         RegistrationResponseModel UserProfile(int userId, IFormFile file);
 
         IList<RegistrationResponseModel> GetAllUsers();
+        AddFreindModel AddFriend(int friendId, int userId);
+        AddFreindModel RequestAccept(int friendId, int userId, int requestId);
+        AddFreindModel RequestDelete(int friendId, int userId, int requestId);
+        IList<RegistrationResponseModel> GetAllFriends(int userId);
     }
 }

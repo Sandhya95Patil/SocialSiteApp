@@ -114,5 +114,60 @@ namespace BusinessLayer.Service
                 throw new Exception(exception.Message);
             }
         }
+
+        public AddFreindModel AddFriend(int friendId, int userId)
+        {
+            try
+            {
+                return this.accountRL.AddFriend(friendId, userId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public AddFreindModel RequestAccept(int friendId, int userId, int requestId)
+        {
+            try
+            {
+                return this.accountRL.RequestAccept(friendId, userId, requestId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public AddFreindModel RequestDelete(int friendId, int userId, int requestId)
+        {
+            try
+            {
+                return this.accountRL.RequestDelete(friendId, userId, requestId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<RegistrationResponseModel> GetAllFriends(int userId)
+        {
+            try
+            {
+                if (userId > 0)
+                {
+                    return this.accountRL.GetAllFriends(userId);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

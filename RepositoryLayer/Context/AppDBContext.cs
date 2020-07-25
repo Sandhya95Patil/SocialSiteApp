@@ -20,5 +20,6 @@ namespace RepositoryLayer.Context
         public DbSet<CommentsModel> Comments { get; set; }
 
         public DbSet<ShareModel> Share { get; set; }
+        public DbSet<AddFreindModel> AddFriends { get; set; }
     }
 }

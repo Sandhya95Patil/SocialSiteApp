@@ -136,10 +136,11 @@ namespace RepositoryLayer.Service
         {
             try
             {
+                var isFriends = this.appDBContext.AddFriends.FirstOrDefault(g => g.FriendId == likeById && g.IsConformed == true);
                 var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId);
                 var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == likeById);
                 var likes = this.appDBContext.Likes.FirstOrDefault(g => g.PostId == postId);
-                if (postExist != null && users != null)
+                if (postExist != null && users != null && isFriends != null)
                 {
                     if (likes == null)
                     {
@@ -239,9 +240,10 @@ namespace RepositoryLayer.Service
         {
             try
             {
+                var isFriends = this.appDBContext.AddFriends.FirstOrDefault(g => g.FriendId == commentById && g.IsConformed == true);
                 var postExist = this.appDBContext.Posts.FirstOrDefault(g => g.Id == postId);
                 var users = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == commentById);
-                if (postExist != null && users != null)
+                if (postExist != null && users != null && isFriends != null)
                 {
                     var data = new CommentsModel()
                     {
@@ -254,15 +256,16 @@ namespace RepositoryLayer.Service
                     this.appDBContext.Comments.Add(data);
                     var result = this.appDBContext.SaveChangesAsync();
 
+                    var comments = this.appDBContext.Comments.FirstOrDefault(g => g.CommentById == commentById && g.PostId == postId);
                         var response = new CommentResponseModel()
                         {
-                            Id = data.Id,
-                            PostId = data.PostId,
-                            UserId = data.UserId,
-                            CommentById = data.CommentById,
+                            Id = comments.Id,
+                            PostId = comments.PostId,
+                            UserId = comments.UserId,
+                            CommentById = comments.CommentById,
                             Comment = data.Comment,
                             Name = users.FirstName,
-                            CreatedDate = data.CreatedDate
+                            CreatedDate = comments.CreatedDate
                         };
                         return response;
                 }

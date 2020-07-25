@@ -18,6 +18,7 @@ namespace RepositoryLayer.Service
     using RepositoryLayer.PostImage;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
     /// <summary>
@@ -200,6 +201,142 @@ namespace RepositoryLayer.Service
                     userLists.Add(data);
                 }
                 return userLists;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public AddFreindModel AddFriend(int friendId, int userId)
+        {
+            try
+            {
+                var friendIdExist = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == friendId);
+                if (friendIdExist != null)
+                {
+                    var addFriendData = new AddFreindModel()
+                    {
+                        UserId = userId,
+                        FriendId = friendId,
+                        IsConformed = false,
+                        IsDeleted = false,
+                        CreatedDate = DateTime.Now
+                    };
+                    this.appDBContext.AddFriends.Add(addFriendData);
+                    this.appDBContext.SaveChangesAsync();
+
+                    var addFriend = this.appDBContext.AddFriends.FirstOrDefault(g => g.UserId == userId && g.FriendId == friendId);
+                    var response = new AddFreindModel()
+                    {
+                        Id = addFriend.Id,
+                        UserId = addFriend.UserId,
+                        FriendId = addFriend.FriendId,
+                        IsConformed = addFriend.IsConformed,
+                        IsDeleted = addFriend.IsDeleted,
+                        CreatedDate = DateTime.Now,
+                    };
+                    return response;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public AddFreindModel RequestAccept(int friendId, int userId, int requestId)
+        {
+            try
+            {
+                var requestIdExist = this.appDBContext.AddFriends.FirstOrDefault(g => g.FriendId == friendId && g.UserId == userId && g.Id == requestId);
+                if (requestIdExist != null)
+                {
+                    requestIdExist.IsConformed = true;
+                    requestIdExist.IsDeleted = false;
+                    this.appDBContext.SaveChangesAsync();
+                    var response = new AddFreindModel()
+                    {
+                        Id = requestIdExist.Id,
+                        UserId = requestIdExist.UserId,
+                        FriendId = requestIdExist.FriendId,
+                        IsConformed = requestIdExist.IsConformed,
+                        IsDeleted = requestIdExist.IsDeleted,
+                        CreatedDate = requestIdExist.CreatedDate
+                    };
+                    return response;
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public AddFreindModel RequestDelete(int friendId, int userId, int requestId)
+        {
+            try
+            {
+                var requestIdExist = this.appDBContext.AddFriends.FirstOrDefault(g => g.FriendId == friendId && g.UserId == userId && g.Id == requestId);
+                if (requestIdExist != null)
+                {
+                    requestIdExist.IsDeleted = true;
+                    requestIdExist.IsConformed = false;
+                    this.appDBContext.SaveChangesAsync();
+                    var response = new AddFreindModel()
+                    {
+                        Id = requestIdExist.Id,
+                        UserId = requestIdExist.UserId,
+                        FriendId = requestIdExist.FriendId,
+                        IsConformed = requestIdExist.IsConformed,
+                        IsDeleted = requestIdExist.IsDeleted,
+                        CreatedDate = requestIdExist.CreatedDate
+                    };
+                    return response;
+                }
+                return null;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public IList<RegistrationResponseModel> GetAllFriends(int userId)
+        {
+            try
+            {
+                IList<RegistrationResponseModel> friendsList = new List<RegistrationResponseModel>();
+                var friendsExists = from addFriend in this.appDBContext.AddFriends
+                                    join reg in this.appDBContext.Registrations on addFriend.FriendId equals reg.Id
+                                    where addFriend.IsConformed == true
+                                    select new RegistrationResponseModel()
+                                    {
+                                        Id=reg.Id,
+                                        FirstName=reg.FirstName,
+                                        LastName=reg.LastName,
+                                        Email=reg.Email,
+                                        Profile=reg.Profile,
+                                        MobileNumber=reg.MobileNumber,
+                                        CreatedDate=reg.CreatedDate
+                                    };
+                foreach (var friend in friendsExists)
+                {
+                    friendsList.Add(friend);
+                }
+                if (friendsList.Count > 0)
+                {
+                    return friendsList;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception exception)
             {

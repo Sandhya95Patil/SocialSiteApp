@@ -159,6 +159,100 @@ namespace SocialSiteApp.Controllers
                 return this.BadRequest(new { status = "false", message = exception.Message });
             }
         }
+
+        [HttpPost]
+        [Route("{addUserId}/Friend")]
+        public IActionResult AddFriend(int addUserId)
+        {
+            try
+            {
+                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                var data = this.accountBL.AddFriend(addUserId, claim);
+                if (data != null)
+                {
+                    return this.Ok(new { Status = "True", message = "Friend Request Sent Successfully",data});
+                }
+                else
+                {
+                    return this.NotFound(new { status = "false", message = "User Not Found" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("{userId}/FriendRequest/{requestId}/Accept")]
+        public IActionResult RequestAccept(int userId, int requestId)
+        {
+            try
+            {
+                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                var data = this.accountBL.RequestAccept(claim, userId, requestId);
+                if (data != null)
+                {
+                    return this.Ok(new { Status = "True", message = "Request Accept Successfully", data });
+                }
+                else
+                {
+                    return this.NotFound(new { status = "false", message = "Request Not Found" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("{userId}/FriendRequest/{requestId}/Reject")]
+        public IActionResult RequestDelete(int userId, int requestId)
+        {
+            try
+            {
+                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                var data = this.accountBL.RequestDelete(claim, userId, requestId);
+                if (data != null)
+                {
+                    return this.Ok(new { Status = "True", message = "Request Deleted Successfully", data });
+                }
+                else
+                {
+                    return this.NotFound(new { status = "false", message = "Request Not Found" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("Friends")]
+        public IActionResult GetAllFriends()
+        {
+            try
+            {
+                var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
+                var data = this.accountBL.GetAllFriends(claim);
+                var count = data.Count();
+                if (data != null)
+                {
+                    return this.Ok(new { Status = "True", message = "All Friends", count, data });
+                }
+                else
+                {
+                    return this.NotFound(new { status = "false", message = "Friends Not Found" });
+                }
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(new { status = "false", message = exception.Message });
+            }
+        }
+
         /// <summary>
         /// generate token
         /// </summary>
