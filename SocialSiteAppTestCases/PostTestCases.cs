@@ -20,6 +20,7 @@ namespace SocialSiteAppTestCases
     using SocialSiteApp.Controllers;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Xunit;
 
 
@@ -55,12 +56,12 @@ namespace SocialSiteAppTestCases
         /// Given post request all fields null return bad request
         /// </summary>
         [Fact]
-        public void Given_Post_Request_All_Fields_Null_Return_Null()
+        public async Task Given_Post_Request_All_Fields_Null_Return_Null()
         {
             IFormFile file = null;
             string text = null;
             string siteUrl = null;
-            var response = postBL.AddPost(file, 3, text, siteUrl);
+            var response = await postBL.AddPost(file, 3, text, siteUrl);
             Assert.Null(response);
         }
 
@@ -68,12 +69,12 @@ namespace SocialSiteAppTestCases
         /// Given add post to social site return ok  
         /// </summary>
         [Fact]
-        public void Given_PostAddSiteUrl_Return_Response()
+        public async Task Given_PostAddSiteUrl_Return_Response()
         {
             IFormFile file =null;
             string text = "test case";
             string siteUrl = "https://www.c-sharpcorner.com/article/custom-model-validation-in-asp-net-core-3-1/";
-            var response = postBL.AddPost(file, 3, text, siteUrl);
+            var response = await postBL.AddPost(file, 3, text, siteUrl);
             Assert.IsType<PostModel>(response);
         }
 
@@ -128,11 +129,11 @@ namespace SocialSiteAppTestCases
         /// Check result of like on post 
         /// </summary>
         [Fact]
-        public void Check_Result_Of_Like_OnPost()
+        public async Task Check_Result_Of_Like_OnPost()
         {
-            int likeById = 17;
-            int postId = 26;
-            var response = postBL.Like(likeById, postId);
+            int likeById = 23;
+            int postId = 42;
+            var response = await postBL.Like(likeById, postId);
             Assert.IsType<LikesModel>(response);
         }
 
@@ -140,11 +141,11 @@ namespace SocialSiteAppTestCases
         /// check result of like on post but like by id not found
         /// </summary>
         [Fact]
-        public void Check_Result_Of_Like_OnPost_But_LikeById_NotFound()
+        public async Task Check_Result_Of_Like_OnPost_But_LikeById_NotFound()
         {
             int likeById = 100;
             int postId = 26;
-            var response = postBL.Like(likeById, postId);
+            var response = await postBL.Like(likeById, postId);
             Assert.Null(response);
         }
 
@@ -178,7 +179,7 @@ namespace SocialSiteAppTestCases
         /// Check add comment on post 
         /// </summary>
         [Fact]
-        public void Check_Add_comment_On_Post_Valid_PostId_Return_Response()
+        public async Task Check_Add_comment_On_Post_Valid_PostId_Return_Response()
         {
             var comment = new CommentShowModel()
             {
@@ -186,7 +187,7 @@ namespace SocialSiteAppTestCases
             };
             var commentById = 2;
             var postId = 20;
-            var response = postBL.AddComment(comment, commentById, postId);
+            var response = await postBL.AddComment(comment, commentById, postId);
             Assert.IsType<CommentResponseModel>(response);
         }
 
@@ -194,7 +195,7 @@ namespace SocialSiteAppTestCases
         /// Check add comment on post but invalid post id return  null
         /// </summary>
         [Fact]
-        public void Check_Add_Comment_OnPost_But_Invalid_PostId_Return_Null()
+        public async Task Check_Add_Comment_OnPost_But_Invalid_PostId_Return_Null()
         {
             var comment = new CommentShowModel()
             {
@@ -202,7 +203,7 @@ namespace SocialSiteAppTestCases
             };
             var commentById = 2;
             var postId = 50;
-            var response = postBL.AddComment(comment, commentById, postId);
+            var response = await postBL.AddComment(comment, commentById, postId);
             Assert.Null(response);
         }
 
@@ -287,8 +288,8 @@ namespace SocialSiteAppTestCases
         [Fact]
         public void Check_SharePost_InValidData_Return_Reponse()
         {
-            int sharebyId = 40;
-            int postId = 44;
+            int sharebyId = 78;
+            int postId = 50;
             var response = postBL.SharePost(sharebyId, postId);
             Assert.Null(response);
         }

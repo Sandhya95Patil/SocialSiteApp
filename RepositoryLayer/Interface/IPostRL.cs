@@ -15,16 +15,16 @@ namespace RepositoryLayer.Interface
 
     public interface IPostRL
     {
-        PostModel AddPost(IFormFile file, int userId, string text, string siteUrl);
+        Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl);
 
         bool DeletePost(int userId, int postId);
         IList<PostModel> GetAllPosts(int userId);
 
-        LikesModel Like(int likeById, int postId);
+        Task<LikesModel> Like(int likeById, int postId);
 
         IList<LikesModel> LikesForPost(int userId, int postId);
 
-        CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId);
+        Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId);
 
         bool DeleteComment(int commentById, int postId, int commentId);
 

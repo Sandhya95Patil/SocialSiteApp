@@ -14,6 +14,7 @@ namespace BusinessLayer.Service
     using RepositoryLayer.Interface;
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public class AccountBL : IAccountBL
     {
@@ -28,13 +29,13 @@ namespace BusinessLayer.Service
         /// </summary>
         /// <param name="registrationShowModel"></param>
         /// <returns></returns>
-        public RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel)
+        public async Task<RegistrationResponseModel> UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
             {
                 if (registrationShowModel != null)
                 {
-                    var response = this.accountRL.UserSignUp(registrationShowModel);
+                    var response = await this.accountRL.UserSignUp(registrationShowModel);
                     if (response != null)
                     {
                         return response;
@@ -125,13 +126,13 @@ namespace BusinessLayer.Service
         /// <param name="friendId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public AddFreindModel AddFriend(int friendId, int userId)
+        public async Task<AddFreindModel> AddFriend(int friendId, int userId)
         {
             try
             {
                 if (friendId > 0 && userId > 0)
                 {
-                    return this.accountRL.AddFriend(friendId, userId);
+                    return await this.accountRL.AddFriend(friendId, userId);
                 }
                 else
                 {

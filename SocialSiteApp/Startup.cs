@@ -38,10 +38,12 @@ namespace SocialSiteApp
             services.AddDbContext<AppDBContext>(options =>
            options.UseSqlServer(this.Configuration.GetConnectionString("connectionDb")));
 
+            services.AddDbContext<AppDBContext>(ServiceLifetime.Transient);
+
             services.AddSwaggerGen(c =>
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Social Site API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Social Site", Version = "v1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

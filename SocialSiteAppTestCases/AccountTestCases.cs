@@ -18,8 +18,10 @@ namespace SocialSiteAppTestCases
     using RepositoryLayer.Interface;
     using RepositoryLayer.Service;
     using SocialSiteApp.Controllers;
+    using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class AccountTestCases
@@ -54,17 +56,17 @@ namespace SocialSiteAppTestCases
         /// given request for user registration valid data return ok object result
         /// </summary>
         [Fact]
-        public void Given_Request_For_UserRegistration_ValidData_Return_OkResult()
+        public async Task Given_Request_For_UserRegistration_ValidData_Return_OkResult()
         {
             var data = new RegistrationShowModel()
             {
                 FirstName = "Nidhi",
                 LastName = "Patil",
-                Email = "ndhuspatil@gmail.com",
+                Email = "ndhuspatil12231@gmail.com",
                 Password = "Nidhu@12",
                 MobileNumber = "7897897865"
             };
-            var response = accountController.UserSignUp(data);
+            var response = await accountController.UserSignUp(data);
             Assert.IsType<OkObjectResult>(response);
         }
 
@@ -72,10 +74,10 @@ namespace SocialSiteAppTestCases
         /// Given request for user registration data not provided return bad request
         /// </summary>
         [Fact]
-        public void Given_Request_For_UserReg_DataNotProvided_Return_BadRequest()
+        public async Task Given_Request_For_UserReg_DataNotProvided_Return_BadRequest()
         {
             RegistrationShowModel data = null;
-            var response = accountController.UserSignUp(data);
+            var response = await accountController.UserSignUp(data);
             Assert.IsType<BadRequestObjectResult>(response);
         }
 
@@ -83,7 +85,7 @@ namespace SocialSiteAppTestCases
         /// given request for user registration email id already present return conflict result
         /// </summary>
         [Fact]
-        public void Given_Request_For_UserRegistration_EmailAlreadyPresent_Return_ConflictResult()
+        public async Task Given_Request_For_UserRegistration_EmailAlreadyPresent_Return_ConflictResult()
         {
             var data = new RegistrationShowModel()
             {
@@ -93,7 +95,7 @@ namespace SocialSiteAppTestCases
                 Password = "yash",
                 MobileNumber = "7897897865"
             };
-            var response = accountController.UserSignUp(data);
+            var response = await accountController.UserSignUp(data);
             Assert.IsType<ConflictObjectResult>(response);
         }
 
@@ -172,11 +174,11 @@ namespace SocialSiteAppTestCases
         /// check valid friend id & user id return response
         /// </summary>
         [Fact]
-        public void Check_ValidFriendIdAndUserId_return_Reponse()
+        public async Task Check_AddFriend_ValidFriendIdAndUserId_return_Reponse()
         {
-            var friendId = 17;
+            var friendId = 28;
             var userId = 3;
-            var response = accountBL.AddFriend(friendId, userId);
+            var response = await accountBL.AddFriend(friendId, userId);
             Assert.IsType<AddFreindModel>(response);
         }
 
@@ -184,11 +186,11 @@ namespace SocialSiteAppTestCases
         /// check friend id not exist return null
         /// </summary>
         [Fact]
-        public void Check_FriendId_NotExist_Return_Null()
+        public async Task Check_FriendId_NotExist_Return_Null()
         {
             var friendId = 100;
             var userId = 3;
-            var response = accountBL.AddFriend(friendId, userId);
+            var response = await accountBL.AddFriend(friendId, userId);
             Assert.Null(response);
         }
 
@@ -196,11 +198,11 @@ namespace SocialSiteAppTestCases
         /// check friend id zero return null
         /// </summary>
         [Fact]
-        public void Check_FriendId_Zero_Return_Null()
+        public async Task Check_FriendId_Zero_Return_Null()
         {
             var friendId = 0;
             var userId = 3;
-            var response = accountBL.AddFriend(friendId, userId);
+            var response = await accountBL.AddFriend(friendId, userId);
             Assert.Null(response);
         }
 

@@ -41,7 +41,7 @@ namespace RepositoryLayer.Service
         /// <param name="text"></param>
         /// <param name="siteUrl"></param>
         /// <returns></returns>
-        public PostModel AddPost(IFormFile file, int userId, string text, string siteUrl)
+        public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace RepositoryLayer.Service
 
                     };
                     this.appDBContext.Posts.Add(postDetails);
-                    this.appDBContext.SaveChangesAsync();
+                    await this.appDBContext.SaveChangesAsync();
 
                     var postData = this.appDBContext.Posts.FirstOrDefault(g => g.UserId == userId && g.Text == text && g.ImageUrl == imageUrl && g.SiteUrl == siteUrl);
                         var response = new PostModel()
@@ -132,7 +132,7 @@ namespace RepositoryLayer.Service
                }
         }
 
-        public LikesModel Like(int likeById, int postId)
+        public async Task<LikesModel> Like(int likeById, int postId)
         {
             try
             {
@@ -153,18 +153,17 @@ namespace RepositoryLayer.Service
                             Like = true
                         };
                         this.appDBContext.Likes.Add(data);
-                        this.appDBContext.SaveChangesAsync();
+                        await this.appDBContext.SaveChangesAsync();
 
-                        var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
+                       // var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
 
                         var response = new LikesModel()
                         {
-                            Id = likeDetails.Id,
-                            PostId = likeDetails.PostId,
-                            UserId = likeDetails.UserId,
-                            LikeById = likeDetails.LikeById,
-                            Like=likeDetails.Like,
-                            CreatedDate = likeDetails.CreatedDate
+                            PostId = data.PostId,
+                            UserId = data.UserId,
+                            LikeById = data.LikeById,
+                            Like=data.Like,
+                            CreatedDate = data.CreatedDate
                         };
                         return response;
                     }
@@ -172,7 +171,7 @@ namespace RepositoryLayer.Service
                     {
                         var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
                         likeDetails.Like = false;
-                        this.appDBContext.SaveChangesAsync();
+                        await this.appDBContext.SaveChangesAsync();
 
                         var response = new LikesModel()
                         {
@@ -189,7 +188,7 @@ namespace RepositoryLayer.Service
                     {
                         var likeDetails = this.appDBContext.Likes.FirstOrDefault(g => g.LikeById == likeById && g.PostId == postId);
                         likeDetails.Like = true;
-                        this.appDBContext.SaveChangesAsync();
+                        await this.appDBContext.SaveChangesAsync();
 
                         var response = new LikesModel()
                         {
@@ -236,7 +235,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId)
+        public async Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId)
         {
             try
             {
@@ -254,7 +253,7 @@ namespace RepositoryLayer.Service
                         CreatedDate = DateTime.Now
                     };
                     this.appDBContext.Comments.Add(data);
-                    var result = this.appDBContext.SaveChangesAsync();
+                    var result = await this.appDBContext.SaveChangesAsync();
 
                     var comments = this.appDBContext.Comments.FirstOrDefault(g => g.CommentById == commentById && g.PostId == postId);
                         var response = new CommentResponseModel()

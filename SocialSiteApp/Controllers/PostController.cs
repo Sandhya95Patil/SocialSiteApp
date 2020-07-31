@@ -41,14 +41,14 @@ namespace SocialSiteApp.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public IActionResult AddPost(IFormFile file, [FromForm]string text, [FromForm]string siteUrl)
+        public async Task<IActionResult> AddPost(IFormFile file, [FromForm]string text, [FromForm]string siteUrl)
         {
             try
             {
                 if (file != null || text != null || siteUrl != null)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = this.postBL.AddPost(file, claim, text, siteUrl);
+                    var data = await this.postBL.AddPost(file, claim, text, siteUrl);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = "Post Added Successfully", data });
@@ -139,14 +139,14 @@ namespace SocialSiteApp.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{postId}/LikeDisLike")]
-        public IActionResult Like(int postId)
+        public async Task<IActionResult> Like(int postId)
         {
             try
             {
                 if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = this.postBL.Like(claim, postId);
+                    var data = await this.postBL.Like(claim, postId);
                     if (data != null)
                     {
                         if (data.Like == true)
@@ -218,14 +218,14 @@ namespace SocialSiteApp.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("{postId}/Comment")]
-        public IActionResult AddComment(CommentShowModel commentShowModel, int postId)
+        public async Task<IActionResult> AddComment(CommentShowModel commentShowModel, int postId)
         {
             try
             {
                 if (postId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = this.postBL.AddComment(commentShowModel, claim, postId);
+                    var data = await this.postBL.AddComment(commentShowModel, claim, postId);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = data.Name + " Commented On This Post Id: "+postId, data });

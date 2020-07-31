@@ -19,8 +19,10 @@ namespace RepositoryLayer.Service
     using RepositoryLayer.PostImage;
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Account class
@@ -41,7 +43,7 @@ namespace RepositoryLayer.Service
         /// </summary>
         /// <param name="registrationShowModel"></param>
         /// <returns></returns>
-        public RegistrationResponseModel UserSignUp(RegistrationShowModel registrationShowModel)
+        public async Task<RegistrationResponseModel> UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
             {
@@ -57,21 +59,24 @@ namespace RepositoryLayer.Service
                         Password = password,
                         MobileNumber = registrationShowModel.MobileNumber,
                         CreatedDate = DateTime.Now,
-                    };
+                    };  
                     this.appDBContext.Registrations.Add(registrationDetails);
-                    var result = this.appDBContext.SaveChangesAsync();
-                    if (result != null)
+                    var result = await this.appDBContext.SaveChangesAsync();
+
+                    if (result > 0)
                     {
-                        var response = new RegistrationResponseModel()
+                        var data = appDBContext.Registrations.Where(u => u.Email == registrationDetails.Email).Select(u => new RegistrationResponseModel()
                         {
-                            Id = registrationDetails.Id,
-                            FirstName = registrationDetails.FirstName,
-                            LastName = registrationDetails.LastName,
-                            Email = registrationDetails.Email,
-                            MobileNumber = registrationDetails.MobileNumber,
-                            CreatedDate = registrationDetails.CreatedDate
-                        };
-                        return response;
+                            Id = u.Id,
+                            FirstName = u.FirstName,
+                            LastName = u.LastName,
+                            Email = u.Email,
+                            MobileNumber = u.MobileNumber,
+                            Profile = u.Profile,
+                            CreatedDate = u.CreatedDate,
+                            ModifiedDate = u.ModifiedDate
+                        });
+                        return data.FirstOrDefault();
                     }
                     else
                     {
@@ -209,12 +214,13 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public AddFreindModel AddFriend(int friendId, int userId)
+        public async Task<AddFreindModel> AddFriend(int friendId, int userId)
         {
             try
             {
                 var friendIdExist = this.appDBContext.Registrations.FirstOrDefault(g => g.Id == friendId);
-                if (friendIdExist != null)
+                var friendAlreadyExist = this.appDBContext.AddFriends.FirstOrDefault(g => g.UserId == userId && g.FriendId == friendId);
+                if (friendIdExist != null && friendAlreadyExist == null)
                 {
                     var addFriendData = new AddFreindModel()
                     {
@@ -225,19 +231,30 @@ namespace RepositoryLayer.Service
                         CreatedDate = DateTime.Now
                     };
                     this.appDBContext.AddFriends.Add(addFriendData);
-                    this.appDBContext.SaveChangesAsync();
+                    await this.appDBContext.SaveChangesAsync();
 
-                    var addFriend = this.appDBContext.AddFriends.FirstOrDefault(g => g.UserId == userId && g.FriendId == friendId);
-                    var response = new AddFreindModel()
+                    var data = appDBContext.AddFriends.Where(u => u.UserId == addFriendData.UserId && u.FriendId == addFriendData.FriendId).Select(u => new AddFreindModel()
                     {
-                        Id = addFriend.Id,
-                        UserId = addFriend.UserId,
-                        FriendId = addFriend.FriendId,
-                        IsConformed = addFriend.IsConformed,
-                        IsDeleted = addFriend.IsDeleted,
-                        CreatedDate = DateTime.Now,
-                    };
-                    return response;
+                        Id = u.Id,
+                        UserId=u.UserId,
+                        FriendId=u.FriendId,
+                        IsConformed=u.IsConformed,
+                        IsDeleted=u.IsDeleted,
+                        CreatedDate = u.CreatedDate,
+                        ModifiedDate = u.ModifiedDate
+                    });
+                    return data.FirstOrDefault();
+                    /* var addFriend = this.appDBContext.AddFriends.FirstOrDefault(g => g.UserId == addFriendData.UserId && g.FriendId == addFriendData.FriendId);
+                     var response = new AddFreindModel()
+                     {
+                         Id=addFriend.Id,
+                         UserId = addFriend.UserId,
+                         FriendId = addFriend.FriendId,
+                         IsConformed = addFriend.IsConformed,
+                         IsDeleted = addFriend.IsDeleted,
+                         CreatedDate = DateTime.Now,
+                     };
+                     return response;*/
                 }
                 else
                 {
@@ -259,7 +276,8 @@ namespace RepositoryLayer.Service
                 {
                     requestIdExist.IsConformed = true;
                     requestIdExist.IsDeleted = false;
-                    this.appDBContext.SaveChangesAsync();
+                    this.appDBContext.SaveChanges();
+
                     var response = new AddFreindModel()
                     {
                         Id = requestIdExist.Id,
@@ -313,7 +331,7 @@ namespace RepositoryLayer.Service
             try
             {
                 IList<RegistrationResponseModel> friendsList = new List<RegistrationResponseModel>();
-                var friendsExists = from addFriend in this.appDBContext.AddFriends where addFriend.UserId == userId
+                var friendsExists = from addFriend in this.appDBContext.AddFriends where addFriend.UserId == userId 
                                     join reg in this.appDBContext.Registrations on addFriend.FriendId equals reg.Id
                                     where addFriend.IsConformed == true
                                     select new RegistrationResponseModel()

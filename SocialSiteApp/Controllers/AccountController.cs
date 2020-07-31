@@ -12,6 +12,7 @@ namespace SocialSiteApp.Controllers
     using System.Linq;
     using System.Security.Claims;
     using System.Text;
+    using System.Threading.Tasks;
     using BusinessLayer.Interface;
     using CommonLayer.Response;
     using CommonLayer.Show;
@@ -40,13 +41,13 @@ namespace SocialSiteApp.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("SignUp")]
-        public IActionResult UserSignUp(RegistrationShowModel registrationShowModel)
+        public async Task<IActionResult> UserSignUp(RegistrationShowModel registrationShowModel)
         {
             try
             {
                 if (registrationShowModel != null)
                 {
-                    var data = this.accountBL.UserSignUp(registrationShowModel);
+                    var data = await this.accountBL.UserSignUp(registrationShowModel);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = "Registration Successfully Done", data });
@@ -162,21 +163,21 @@ namespace SocialSiteApp.Controllers
 
         [HttpPost]
         [Route("{userId}/Friend")]
-        public IActionResult AddFriend(int userId)
+        public async Task<IActionResult> AddFriend(int userId)
         {
             try
             {
                 if (userId > 0)
                 {
                     var claim = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(g => g.Type == "Id").Value);
-                    var data = this.accountBL.AddFriend(userId, claim);
+                    var data = await this.accountBL.AddFriend(userId, claim);
                     if (data != null)
                     {
                         return this.Ok(new { Status = "True", message = "Friend Request Sent Successfully", data });
                     }
                     else
                     {
-                        return this.NotFound(new { status = "false", message = "User Not Found" });
+                        return this.NotFound(new { status = "false", message = "User Not Found or Already Friend" });
                     }
                 }
                 else

@@ -35,13 +35,13 @@ namespace BusinessLayer.Service
         /// <param name="text"></param>
         /// <param name="siteUrl"></param>
         /// <returns></returns>
-        public PostModel AddPost(IFormFile file, int userId, string text, string siteUrl)
+        public async Task<PostModel> AddPost(IFormFile file, int userId, string text, string siteUrl)
         {
             try
             {
                 if (file != null || text != null && siteUrl != null)
                 {
-                    var response = this.postRL.AddPost(file, userId, text, siteUrl);
+                    var response = await this.postRL.AddPost(file, userId, text, siteUrl);
                     return response;
                 }
                 else
@@ -111,13 +111,13 @@ namespace BusinessLayer.Service
         /// <param name="likeById"></param>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public LikesModel Like(int likeById, int postId)
+        public async Task<LikesModel> Like(int likeById, int postId)
         {
             try
             {
                 if (likeById > 0 && postId > 0)
                 {
-                    return this.postRL.Like(likeById, postId);
+                    return await this.postRL.Like(likeById, postId);
                 }
                 else
                 {
@@ -160,13 +160,13 @@ namespace BusinessLayer.Service
         /// <param name="commentById"></param>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public CommentResponseModel AddComment(CommentShowModel commentShowModel, int commentById, int postId)
+        public async Task<CommentResponseModel> AddComment(CommentShowModel commentShowModel, int commentById, int postId)
         {
             try
             {
                 if (postId > 0)
                 {
-                    return this.postRL.AddComment(commentShowModel, commentById, postId);
+                    return await this.postRL.AddComment(commentShowModel, commentById, postId);
                 }
                 return null;
             }
